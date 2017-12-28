@@ -1,0 +1,209 @@
+/* 
+	Hack because this file gets passed through m4.
+	changequote(`[[',`]]') 
+*/
+
+#include "Lexer.hpp"
+#include "Tokens.h"
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <vector>
+#include <string>
+#include <iostream>
+#include <iomanip>
+
+
+
+using namespace c8;
+/*
+std::ostream& operator<<(std::ostream& s, tok::TokenKind const& kind){
+	switch(kind){
+		#define TOK(x) case tok::x: s << #x; break;
+		#include "TokenKinds.def"
+		#undef TOK
+	default:
+		s << "????";
+	}
+	
+}
+
+
+struct Location {
+	const char * loc;
+	int line;
+	int col;
+	
+	Location(const char *loc_): loc(loc_), line(0), col(0){}
+	Location(const char *loc_, int line_): loc(loc_), line(line_), col(0){}
+	Location(int line_, int col_): loc(NULL), line(line_), col(col_){}
+};
+std::ostream& operator<<(std::ostream& s, Location const& loc){
+	std::ios::fmtflags old_settings = s.flags();
+	
+	s << std::setw(3) << loc.line << ":" << std::setw(3) << loc.col;	
+	//s.flags(old_settings);
+}
+
+struct Token{
+	TokenKind kind_;
+	std::string str_;
+	Location loc_;
+	
+	Token(TokenKind kind, const Location &loc, const std::string &str): kind_(kind), str_(str), loc_(loc){}
+};
+
+std::ostream& operator<<(std::ostream& s, Token const& tok){
+	s << "(" << tok.loc_ << ") [" << tok.kind_ << "] - \"" << tok.str_ << "\"\n"; 
+}
+*/	
+
+%%{
+	machine base9;
+
+	newline = '\n' @{curline += 1; linestart = ts;};
+	any_count_line = any | newline;
+
+	# Consume a C comment.
+	c_comment := any_count_line* :>> '*/' @{fgoto main;};
+
+	main := |*
+
+	# Include the generated fragment which defines our punctuators and keywords
+	include([[ragel_fragment.rl]])
+	
+	# Alpha numberic characters or underscore.
+	alnum_u = alnum | '_';
+
+	# Alpha charactres or underscore.
+	alpha_u = alpha | '_';
+
+	# Symbols. Upon entering clear the buffer. On all transitions
+	# buffer a character. Upon leaving dump the symbol.
+	( punct - [_'"] ) {
+		printf( "symbol(%i): %c\n", curline, ts[0] );
+	};
+
+	# Identifier. Upon entering clear the buffer. On all transitions
+	# buffer a character. Upon leaving, dump the identifier.
+	alpha_u alnum_u* {
+		push_token(tok::identifier);
+	};
+
+	# Single Quote.
+	sliteralChar = [^'\\] | newline | ( '\\' . any_count_line );
+	'\'' . sliteralChar* . '\'' {
+		push_token(tok::string_literal);
+	};
+
+	# Double Quote.
+	dliteralChar = [^"\\] | newline | ( '\\' any_count_line );
+	'"' . dliteralChar* . '"' {
+		push_token(tok::string_literal);
+	};
+
+	# Whitespace is standard ws, newlines and control codes.
+	any_count_line - 0x21..0x7e;
+
+	# Describe both c style comments and c++ style comments. The
+	# priority bump on tne terminator of the comments brings us
+	# out of the extend* which matches everything.
+	'//' [^\n]* newline;
+
+	'/*' { fgoto c_comment; };
+
+	# Match an integer. We don't bother clearing the buf or filling it.
+	# The float machine overlaps with int and it will do it.
+	digit+ {
+		push_token(tok::numeric_literal);
+	};
+
+	# Match a float. Upon entering the machine clear the buf, buffer
+	# characters on every trans and dump the float upon leaving.
+	digit+ '.' digit+ {
+		push_token(tok::numeric_literal);
+	};
+
+	# Match a hex. Upon entering the hex part, clear the buf, buffer characters
+	# on every trans and dump the hex on leaving transitions.
+	'0x' xdigit+ {
+		push_token(tok::numeric_literal);
+	};
+
+	*|;
+}%%
+
+%% write data nofinal;
+
+#define BUFSIZE 4096
+/*
+class Lexer{
+	char *ts, *te, *linestart;
+	int curline;
+	
+	std::vector<Token> tokens;
+	
+	std::string get_str(){ return std::string(ts, te-ts);}
+	
+	void push_token(TokenKind kind) {
+		tokens.push_back(Token(kind, make_loc(), get_str()));
+	}
+		
+public:
+	void dump_tokens() {
+		std::vector<Token>::iterator it = tokens.begin();
+		
+		for(; it != tokens.end(); ++it){
+			std::cout << *it;
+		}
+	}
+	Location make_loc() {
+		return Location(curline, ts-linestart);
+	}
+	void scan(FILE *f);
+};
+*/
+void Lexer::lex()
+{
+	int cs, act, have = 0;
+	int done = 0;
+	te = 0;
+	const char *p = cs_.begin();
+	const char *pe = cs_.end();
+	const char *eof = pe;
+	//ts = 0;
+	linestart = p;
+	std::cout << "lex()\n";
+	
+	curline = 1;
+	%% write init;
+
+	%% write exec;
+
+	if ( cs == base9_error ) {
+		//TODO fix me
+		fprintf(stderr, "PARSE ERROR\n" );
+		return;
+	}
+
+}
+/*
+int main(int argc, char **argv)
+{
+	if(argc < 2){
+		fprintf(stderr, "ERROR, need to pass file name\n");
+		return 1;
+	}
+	FILE * f = fopen(argv[1], "r");
+	if (f == NULL){
+		fprintf(stderr, "FAILED to open file '%s'\n", argv[1]);
+		return 1;
+	}
+	
+	Lexer lexer;
+	lexer.scan(f);
+	fclose(f);
+	return 0;
+}
+*/

@@ -1,0 +1,131 @@
+#ifndef TOK
+#define TOK(X)
+#endif
+#ifndef PUNCTUATOR
+#define PUNCTUATOR(X,Y) TOK(X)
+#endif
+#ifndef KEYWORD
+#define KEYWORD(X) TOK(kw_ ## X)
+#endif
+
+TOK(invalid)
+
+// General tokens
+TOK(identifier)
+TOK(numeric_literal)
+TOK(string_literal)
+
+
+// Punctuators
+PUNCTUATOR(l_brace,                    "{")
+PUNCTUATOR(r_brace,                    "}")
+PUNCTUATOR(l_paren,                    "(")
+PUNCTUATOR(r_paren,                    ")")
+PUNCTUATOR(l_square,                   "[")
+PUNCTUATOR(r_square,                   "]")
+
+PUNCTUATOR(period,                     ".")
+PUNCTUATOR(ellipsis,                   "...")
+PUNCTUATOR(semi,                       ";")
+PUNCTUATOR(comma,                      ",")
+
+PUNCTUATOR(less,                       "<")
+PUNCTUATOR(greater,                    ">")
+PUNCTUATOR(lessequal,                  "<=")
+PUNCTUATOR(greaterequal,               ">=")
+
+PUNCTUATOR(equalequal,                 "==")
+PUNCTUATOR(exclaimequal,               "!=")
+PUNCTUATOR(equalequalequal,            "===")
+PUNCTUATOR(exclaimequalequal,          "!==")
+
+PUNCTUATOR(plus,                       "+")
+PUNCTUATOR(minus,                      "-")
+PUNCTUATOR(star,                       "*")
+PUNCTUATOR(percent,                    "%")
+PUNCTUATOR(starstar,                   "**")
+PUNCTUATOR(plusplus,                   "++")
+PUNCTUATOR(minusminus,                 "--")
+
+PUNCTUATOR(lessless,                   "<<")
+PUNCTUATOR(greatergreater,             ">>")
+PUNCTUATOR(greatergreatergreater,      ">>>")
+
+PUNCTUATOR(amp,                        "&")
+PUNCTUATOR(pipe,                       "|")
+PUNCTUATOR(caret,                      "^")
+
+PUNCTUATOR(exclaim,                    "!")
+PUNCTUATOR(tilde,                      "~")
+
+PUNCTUATOR(ampamp,                     "&&")
+PUNCTUATOR(pipepipe,                   "||")
+
+PUNCTUATOR(question,                   "?")
+PUNCTUATOR(colon,                      ":")
+
+PUNCTUATOR(equal,                      "=")
+PUNCTUATOR(plusequal,                  "+=")
+PUNCTUATOR(minusequal,                 "-=")
+PUNCTUATOR(starequal,                  "*=")
+PUNCTUATOR(percentequal,               "%=")
+PUNCTUATOR(starstarequal,              "**=")
+PUNCTUATOR(lesslessequal,              "<<=")
+PUNCTUATOR(greatergreaterequal,        ">>=")
+PUNCTUATOR(greatergreatergreaterequal, ">>>=")
+PUNCTUATOR(ampequal,                   "&=")
+PUNCTUATOR(pipeequal,                  "|=")
+PUNCTUATOR(caretequal,                 "^=")
+
+PUNCTUATOR(arrow,                      "=>")
+
+
+PUNCTUATOR(slash,               "/")
+PUNCTUATOR(slashequal,          "/=")
+
+
+// literals
+KEYWORD(null)
+KEYWORD(true)
+KEYWORD(false)
+
+// Keywords
+KEYWORD(await)
+KEYWORD(break)
+KEYWORD(case)
+KEYWORD(catch)
+KEYWORD(class)
+KEYWORD(const)
+KEYWORD(continue)
+KEYWORD(debugger)
+KEYWORD(default)
+KEYWORD(delete)
+KEYWORD(do)
+KEYWORD(else)
+KEYWORD(export)
+KEYWORD(extends)
+KEYWORD(finally)
+KEYWORD(for)
+KEYWORD(function)
+KEYWORD(if)
+KEYWORD(import)
+KEYWORD(in)
+KEYWORD(instanceof)
+KEYWORD(new)
+KEYWORD(return)
+KEYWORD(super)
+KEYWORD(switch)
+KEYWORD(this)
+KEYWORD(throw)
+KEYWORD(try)
+KEYWORD(typeof)
+KEYWORD(var)
+KEYWORD(void)
+KEYWORD(while)
+KEYWORD(with)
+KEYWORD(yield)
+
+
+#undef TOK
+#undef PUNCTUATOR
+#undef KEYWORD
