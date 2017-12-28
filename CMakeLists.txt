@@ -39,9 +39,9 @@ add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/Lexer_generated.cpp"
     
 )
 
+# C8 Library
 
-add_executable(c8
-    src/main.cpp
+add_library(c8
     src/Lexer.cpp
     src/Parser.cpp
     src/Tokens.cpp
@@ -53,8 +53,19 @@ add_executable(c8
 target_include_directories(c8 PRIVATE src)
 
 target_link_libraries(c8
-    PRIVATE
-        lingo
+    PUBLIC
+    lingo
 )
 
 set_property(TARGET c8 PROPERTY CXX_STANDARD 14)
+
+
+# C8 Executable
+
+add_executable(c8_exe
+    src/main.cpp)
+set_target_properties(c8_exe PROPERTIES OUTPUT_NAME "c8")
+target_link_libraries(c8_exe c8)
+target_include_directories(c8_exe PRIVATE src)
+set_property(TARGET c8_exe PROPERTY CXX_STANDARD 14)
+
