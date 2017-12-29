@@ -59,8 +59,6 @@ namespace {
                 return 8;
             case tok::amp:
                 return 9;
-
-
             case tok::plus:
             case tok::minus:
                 return 13;
@@ -70,6 +68,8 @@ namespace {
                 return 14;
             case tok::starstar:
                 return 15;
+            default:
+                return 0;
         }
     }
 }
@@ -243,7 +243,7 @@ NodePtr<Expression> Parser::ParseUpdateExpression() {
     NodePtr<Expression> child_expr = ParseLHSExpression();
     kind =  ts_.peek().kind();
     if( kind == tok::plusplus || kind == tok::minusminus){
-        NodePtr<UpdateExpression> expr = std::move(expr);
+        NodePtr<UpdateExpression> expr;
         expr = std::make_unique<UpdateExpression>();
         expr->prefix = false;
         expr->oper = ts_.get();
@@ -356,7 +356,7 @@ NodePtr<Expression> Parser::ParsePrimaryExpression(){
 //TODO this is a big hack
 NodePtr<Statement> Parser::ParseStatement(){
     switch(ts_.peek().kind()){
-        
+
         case tok::l_brace: return ParseBlock();
         case tok::semi: throw UnimplementedException("ParseStatement - Semicolon"); //TODO need actually return an empty statement
         case tok::kw_export: throw std::exception();
@@ -369,10 +369,12 @@ NodePtr<Statement> Parser::ParseStatement(){
             return stmt;
         }
         case tok::kw_var: throw std::exception();
-        case tok::kw_while: throw std::exception();        
-        
-        
+        case tok::kw_while: throw std::exception();
+            break;
+        default:
+            break;
     }
+    throw std::exception();
 }
 
 NodePtr<Statement> Parser::ParseSourceElement(){

@@ -11,14 +11,7 @@
 #include <exception>
 
 using namespace c8;
-/*
-int sssmain(int argc, char **argv){
-    try {
-        return protected_main(argc, argv);
-    } catch (std::exception e) {
-        std::cerr << "Uncaught exception!\n";
-    }
-}*/
+
 int main(int argc, char **argv) {
     std::set_terminate(__gnu_cxx::__verbose_terminate_handler);
      std::cout << "\n\n";
