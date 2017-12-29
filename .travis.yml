@@ -1,0 +1,34 @@
+language: cpp
+os:
+  - linux
+
+sudo: false
+cache: ccache # https://docs.travis-ci.com/user/caching/
+dist: trusty
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-5
+      - llvm
+      - ragel
+      - m4
+      - sed
+      - libgmp-dev
+      - libboost-dev
+      - libboost-system-dev
+      - libboost-filesystem-dev
+
+env:
+  global:
+    - GTEST_COLOR=1
+    - BUILD_JOBS=2
+    - CXX="g++-5"
+
+before_script:
+  - ccache -s -z
+script:
+  - bash build-on-travis.sh
+after_script:
+  - ccache -s
