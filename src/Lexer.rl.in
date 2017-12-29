@@ -1,6 +1,6 @@
-/* 
+/*
 	Hack because this file gets passed through m4.
-	changequote(`[[',`]]') 
+	changequote(`[[',`]]')
 */
 
 #include "Lexer.hpp"
@@ -17,47 +17,7 @@
 
 
 using namespace c8;
-/*
-std::ostream& operator<<(std::ostream& s, tok::TokenKind const& kind){
-	switch(kind){
-		#define TOK(x) case tok::x: s << #x; break;
-		#include "TokenKinds.def"
-		#undef TOK
-	default:
-		s << "????";
-	}
-	
-}
 
-
-struct Location {
-	const char * loc;
-	int line;
-	int col;
-	
-	Location(const char *loc_): loc(loc_), line(0), col(0){}
-	Location(const char *loc_, int line_): loc(loc_), line(line_), col(0){}
-	Location(int line_, int col_): loc(NULL), line(line_), col(col_){}
-};
-std::ostream& operator<<(std::ostream& s, Location const& loc){
-	std::ios::fmtflags old_settings = s.flags();
-	
-	s << std::setw(3) << loc.line << ":" << std::setw(3) << loc.col;	
-	//s.flags(old_settings);
-}
-
-struct Token{
-	TokenKind kind_;
-	std::string str_;
-	Location loc_;
-	
-	Token(TokenKind kind, const Location &loc, const std::string &str): kind_(kind), str_(str), loc_(loc){}
-};
-
-std::ostream& operator<<(std::ostream& s, Token const& tok){
-	s << "(" << tok.loc_ << ") [" << tok.kind_ << "] - \"" << tok.str_ << "\"\n"; 
-}
-*/	
 
 %%{
 	machine base9;
@@ -72,7 +32,7 @@ std::ostream& operator<<(std::ostream& s, Token const& tok){
 
 	# Include the generated fragment which defines our punctuators and keywords
 	include([[ragel_fragment.rl]])
-	
+
 	# Alpha numberic characters or underscore.
 	alnum_u = alnum | '_';
 
@@ -137,33 +97,7 @@ std::ostream& operator<<(std::ostream& s, Token const& tok){
 %% write data nofinal;
 
 #define BUFSIZE 4096
-/*
-class Lexer{
-	char *ts, *te, *linestart;
-	int curline;
-	
-	std::vector<Token> tokens;
-	
-	std::string get_str(){ return std::string(ts, te-ts);}
-	
-	void push_token(TokenKind kind) {
-		tokens.push_back(Token(kind, make_loc(), get_str()));
-	}
-		
-public:
-	void dump_tokens() {
-		std::vector<Token>::iterator it = tokens.begin();
-		
-		for(; it != tokens.end(); ++it){
-			std::cout << *it;
-		}
-	}
-	Location make_loc() {
-		return Location(curline, ts-linestart);
-	}
-	void scan(FILE *f);
-};
-*/
+
 void Lexer::lex()
 {
 	int cs, act, have = 0;
@@ -175,7 +109,7 @@ void Lexer::lex()
 	//ts = 0;
 	linestart = p;
 	std::cout << "lex()\n";
-	
+
 	curline = 1;
 	%% write init;
 
@@ -188,22 +122,3 @@ void Lexer::lex()
 	}
 
 }
-/*
-int main(int argc, char **argv)
-{
-	if(argc < 2){
-		fprintf(stderr, "ERROR, need to pass file name\n");
-		return 1;
-	}
-	FILE * f = fopen(argv[1], "r");
-	if (f == NULL){
-		fprintf(stderr, "FAILED to open file '%s'\n", argv[1]);
-		return 1;
-	}
-	
-	Lexer lexer;
-	lexer.scan(f);
-	fclose(f);
-	return 0;
-}
-*/
