@@ -87,4 +87,4 @@ target_link_libraries(c8test
 
 set_property(TARGET c8test PROPERTY CXX_STANDARD 14)
 
-add_test(NAME c8test COMMAND c8test)
+add_test(NAME c8test COMMAND env C8_TEST_MATERIAL=${CMAKE_CURRENT_SOURCE_DIR}/test $<TARGET_FILE:c8test>)
