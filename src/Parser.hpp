@@ -2,7 +2,7 @@
 #define C8_PARSER_HPP
 
 #include <lingo/token.hpp>
-#include "Tokens.h"
+#include "Tokens.hpp"
 
 #include "AST.hpp"
 

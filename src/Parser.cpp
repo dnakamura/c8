@@ -1,7 +1,7 @@
 #include "Parser.hpp"
 #include <iostream>
 #include <memory>
-#include "Tokens.h"
+#include "Tokens.hpp"
 using namespace c8;
 using namespace c8::ast;
 

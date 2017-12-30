@@ -4,7 +4,7 @@
 #include <lingo/character.hpp>
 #include <lingo/symbol.hpp>
 #include <lingo/token.hpp>
-#include "Tokens.h"
+#include "Tokens.hpp"
 
 namespace c8 {
 
