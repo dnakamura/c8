@@ -48,7 +48,6 @@ add_library(c8
     src/Lexer.cpp
     src/Parser.cpp
     src/Tokens.cpp
-    src/Debug.cpp
     src/DebugPrinter.cpp
     Lexer_generated.cpp
 )
