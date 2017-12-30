@@ -61,6 +61,6 @@
         "xtree": "cpp",
         "xutility": "cpp"
     },
-    "editor.tabSize": 4,
+    "editor.tabSize": 2,
     "files.eol": "\n"
 }
