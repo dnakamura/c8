@@ -19,9 +19,11 @@ c8_find_program(SED_PATH sed)
 
 
 # TODO the generation logic for the lexer requires unix at the moment
-
+add_subdirectory(backward-cpp)
 add_subdirectory(lingo)
 add_subdirectory(googletest)
+
+
 
 add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/ragel_fragment.rl"
     COMMAND "CMAKE_CURRENT_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/translate.sh"
@@ -63,7 +65,8 @@ set_property(TARGET c8 PROPERTY CXX_STANDARD 14)
 # C8 Executable
 
 add_executable(c8_exe
-    src/main.cpp)
+    src/main.cpp ${BACKWARD_ENABLE})
+    add_backward(c8_exe)
 
 set_target_properties(c8_exe PROPERTIES OUTPUT_NAME "c8")
 
