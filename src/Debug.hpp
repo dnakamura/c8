@@ -14,7 +14,6 @@ namespace ast{
         void Visit(Identifier *node) override;
         void Visit(FunctionDeclaration *node) override;
         void Visit(BlockStatement *node) override;
-        //virtual void Visit(Expression *node)
         void Visit(BinaryExpression *node) override;
         void Visit(ReturnStatement *node) override;
         void Visit(Literal *node) override;
