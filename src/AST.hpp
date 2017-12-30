@@ -28,17 +28,36 @@ namespace ast{
     struct Literal;
     struct BinaryExpression;
     struct ReturnStatement;
+    struct ExpressionStatement;
+    struct UnaryExpression;
+    struct UpdateExpression;
+    struct IfStatement;
+    struct ForStatement;
+    struct Declaration;
+    struct VariableDeclaration;
+    
 
 
     class Visitor {
+
         public:
-        virtual void Visit(Identifier *node) = 0;
+        
         virtual void Visit(FunctionDeclaration *node) = 0;
         virtual void Visit(BlockStatement *node) = 0;
         //virtual void Visit(Expression *node)
-        virtual void Visit(BinaryExpression *node) = 0;
+        
         virtual void Visit(ReturnStatement *node) = 0;
+        virtual void Visit(ExpressionStatement *node) = 0;
+        virtual void Visit(IfStatement *node) = 0;
+        virtual void Visit(ForStatement *node) = 0;
+        
+
+        //Expression visitors
+        virtual void Visit(BinaryExpression *node) = 0;
+        virtual void Visit(UnaryExpression *node) = 0;
+        virtual void Visit(UpdateExpression *node) = 0;
         virtual void Visit(Literal *node) = 0;
+        virtual void Visit(Identifier *node) = 0;
         //virtual void Visit
         
 
@@ -51,11 +70,19 @@ namespace ast{
         //virtual void Accept(Visitor *v) = 0;
         enum NodeKind {
             Kind_STATEMENT_START,
-            Kind_FunctionDeclaration,
             
             Kind_BlockStatement,
             Kind_ReturnStatement,
-            Kind_STATEMENT_END,
+            Kind_ExpressionStatement,
+            Kind_IfStatement,
+            Kind_ForStatement,
+
+            //DeclaratoionStart?
+            Kind_DEVLARATION_START,
+            Kind_FunctionDeclaration,
+            Kind_VariableDeclaration,
+            Kind_DECLARATION_END,
+            Kind_STATEMENT_END = Kind_DECLARATION_END,
 
             Kind_EXPRESSION_START,
             Kind_Identifier,
@@ -64,7 +91,9 @@ namespace ast{
             Kind_UnaryExpression,
             Kind_BinaryExpression,
             Kind_MemberExpression,
-            Kind_EXPRESSION_END
+            Kind_EXPRESSION_END,
+
+            Kind_VariableDeclarator
         };
 
         
@@ -94,7 +123,15 @@ namespace ast{
 
         static bool classof(const Node* node) { return node->Kind() == Kind_UpdateExpression; }
 
+        //TODO deprecated
         UpdateExpression():Expression(Kind_UpdateExpression){};
+        UpdateExpression(NodePtr<Expression> &&arg, const lingo::Token &op, bool pfx):
+            Expression(Kind_UpdateExpression),
+            argument(std::move(arg)),
+            oper(op),
+            prefix(pfx)
+            {}
+
     };
 
     struct UnaryExpression: public Expression {
@@ -146,6 +183,29 @@ namespace ast{
         using Node::Node;
     };
 
+    struct Declaration: public Statement {
+
+        protected:
+        using Statement::Statement;
+    };
+
+    struct VariableDeclarator: public Node {
+        NodePtr<Identifier> id;
+        NodePtr<Expression> init;
+
+        VariableDeclarator(NodePtr<Identifier> &&id_, NodePtr<Expression> &&init_):
+            Node(Kind_VariableDeclarator),
+            id(std::move(id_)),
+            init(std::move(init_))
+            {}
+    };
+
+    struct VariableDeclaration: public Declaration{
+        
+        //TODO kind
+        VariableDeclaration(): Declaration(Kind_VariableDeclaration){}
+    };
+
 
     struct BlockStatement: public Statement {
         NodeVector<Statement> body;
@@ -174,6 +234,12 @@ namespace ast{
     };
 
 
+    struct ExpressionStatement: public Statement{
+        NodePtr<Expression> expression;
+
+        ExpressionStatement(NodePtr<Expression> &&expr):Statement(Kind_ExpressionStatement), expression(std::move(expr)) {}
+    };
+    
     struct Identifier: public Expression {
         lingo::Symbol const *symbol;
 
@@ -205,6 +271,47 @@ namespace ast{
         FunctionDeclaration(): Statement(Kind_FunctionDeclaration) {}
     };
     
+    struct IfStatement: public Statement{
+        NodePtr<Expression> test;
+        NodePtr<Statement> consequent;
+        NodePtr<Statement> alternate;
+
+        IfStatement(NodePtr<Expression>&& test_, NodePtr<Statement> consequent_):
+            Statement(Kind_IfStatement),
+            test(std::move(test_)),
+            consequent(std::move(consequent_)),
+            alternate(nullptr)
+            {}
+        IfStatement(NodePtr<Expression>&& test_, NodePtr<Statement> consequent_, NodePtr<Statement> alternate_):
+            Statement(Kind_IfStatement),
+            test(std::move(test_)),
+            consequent(std::move(consequent_)),
+            alternate(std::move(alternate_))
+            {}
+
+    };
+
+    struct ForStatement: public Statement {
+        NodePtr<Node> init;
+        NodePtr<Expression> test;
+        NodePtr<Expression> update;
+        NodePtr<Statement> body;
+
+        ForStatement(NodePtr<Expression> &&init_, NodePtr<Expression> &&test_, NodePtr<Expression> &&update_, NodePtr<Statement> &&body_):
+            Statement(Kind_ForStatement),
+            init(std::move(init_)),
+            test(std::move(test_)),
+            update(std::move(update_)),
+            body(std::move(body_))
+            {}
+        ForStatement(NodePtr<VariableDeclaration> &&init_, NodePtr<Expression> &&test_, NodePtr<Expression> &&update_, NodePtr<Statement> &&body_):
+            Statement(Kind_ForStatement),
+            init(std::move(init_)),
+            test(std::move(test_)),
+            update(std::move(update_)),
+            body(std::move(body_))
+            {}
+    };
 
 
 };

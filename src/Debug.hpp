@@ -10,13 +10,19 @@
 namespace c8 {
 namespace ast{
     class DebugPrinter: public  Visitor{
-                public:
-        void Visit(Identifier *node) override;
+        public:
         void Visit(FunctionDeclaration *node) override;
         void Visit(BlockStatement *node) override;
-        void Visit(BinaryExpression *node) override;
         void Visit(ReturnStatement *node) override;
+        void Visit(IfStatement *node) override;
+        void Visit(ForStatement *node) override;
+        
         void Visit(Literal *node) override;
+        void Visit(Identifier *node) override;
+        void Visit(BinaryExpression *node) override;
+        void Visit(UnaryExpression *node) override;
+        void Visit(UpdateExpression *node) override;
+
 
         DebugPrinter(): p(std::cout){}
         protected:
@@ -25,6 +31,7 @@ namespace ast{
         void Visit(Node *node);
         void Visit(Expression *node);
         void Visit(Statement *node);
+        void Visit(ExpressionStatement *node) { Visit(node->expression.get()); }
         private:
         lingo::Printer p;
         //virtual void Visit

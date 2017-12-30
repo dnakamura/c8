@@ -17,13 +17,19 @@ void DebugPrinter::Visit(Expression *node){
     //TODO make this use out llvm-style rtti
     switch(node->Kind()){
         case Node::Kind_BinaryExpression:
-            Visit(dynamic_cast<BinaryExpression*>(node));
+            Visit(static_cast<BinaryExpression*>(node));
             break;
         case Node::Kind_Identifier:
-            Visit(dynamic_cast<Identifier*>(node));
+            Visit(static_cast<Identifier*>(node));
             break;
         case Node::Kind_Literal:
-            Visit(dynamic_cast<Literal*>(node));
+            Visit(static_cast<Literal*>(node));
+            break;
+        case Node::Kind_UpdateExpression:
+            Visit(static_cast<UpdateExpression*>(node));
+            break;
+        case Node::Kind_UnaryExpression:
+            Visit(static_cast<UnaryExpression*>(node));
             break;
         default:
         throw std::exception();
@@ -34,10 +40,19 @@ void DebugPrinter::Visit(Expression *node){
 void DebugPrinter::Visit(Statement *node){
     switch(node->Kind()){
         case Node::Kind_BlockStatement:
-            Visit(dynamic_cast<BlockStatement*>(node));
+            Visit(static_cast<BlockStatement*>(node));
             break;
         case Node::Kind_ReturnStatement:
-            Visit(dynamic_cast<ReturnStatement*>(node));
+            Visit(static_cast<ReturnStatement*>(node));
+            break;
+        case Node::Kind_ExpressionStatement:
+            Visit(static_cast<ExpressionStatement*>(node));
+            break;
+        case Node::Kind_IfStatement:
+            Visit(static_cast<IfStatement*>(node));
+            break;
+        case Node::Kind_ForStatement:
+            Visit(static_cast<ForStatement *>(node));
             break;
         default:
         throw std::exception();
@@ -115,7 +130,7 @@ void DebugPrinter::Visit(ReturnStatement *node){
 
 void DebugPrinter::Visit(BinaryExpression *node){
     lingo::print(p,"[Binary] - ");
-    lingo::print(p, node->oper.symbol()->spelling());
+    lingo::print_quoted(p, node->oper.symbol()->spelling());
     lingo::indent(p);
     lingo::print_newline(p);
 
@@ -125,3 +140,91 @@ void DebugPrinter::Visit(BinaryExpression *node){
     lingo::undent(p);
 }
 
+void DebugPrinter::Visit(UpdateExpression *node){
+    if(node->prefix){
+        lingo::print(p, "[Prefix Update] - ");
+    } else {
+        lingo::print(p, "[Postfix Update] - ");
+    }
+    lingo::print_quoted(p, node->oper.symbol()->spelling());
+    lingo::indent(p);
+    lingo::print_newline(p);
+    Visit(node->argument.get());
+    lingo::undent(p);
+}
+
+void DebugPrinter::Visit(UnaryExpression *node){
+    lingo::print(p, "[Unary] - ");
+    lingo::print_quoted(p, node->oper.symbol()->spelling());
+    lingo::indent(p);
+    lingo::print_newline(p);
+    Visit(node->argument.get());
+    lingo::undent(p);
+}
+
+void DebugPrinter::Visit(IfStatement *node){
+    lingo::print(p, "if");
+    lingo::indent(p);
+    lingo::print_newline(p);
+    Visit(node->test.get());
+    lingo::undent(p);
+    lingo::print_newline(p);
+    lingo::print(p, "then");
+    lingo::indent(p);
+    lingo::print_newline(p);
+    Visit(node->consequent.get());
+    lingo::undent(p);
+
+    if(node->alternate != nullptr){
+        lingo::print_newline(p);
+        lingo::print("else");
+        lingo::indent(p);
+        lingo::print_newline(p);
+        Visit(node->alternate.get());
+        lingo::undent(p);
+    }
+}
+
+//init test update body
+void DebugPrinter::Visit(ForStatement *node){
+    lingo::print(p, "for");
+    lingo::print_newline(p);
+    lingo::print(p, "- init");
+    lingo::indent(p);
+    lingo::print_newline(p);
+    if(node->init == nullptr) {
+        lingo::print(p, "[NULL]");
+    } else {
+        Visit(node->init.get());
+    }
+    lingo::undent(p);
+    
+    lingo::print_newline(p);
+    lingo::print(p, "- test");
+    lingo::indent(p);
+    lingo::print_newline(p);
+    if(node->test == nullptr) {
+        lingo::print(p, "[NULL]");
+    } else {
+        Visit(node->test.get());
+    }
+    lingo::undent(p);
+
+    lingo::print_newline(p);
+    lingo::print(p, "- update");
+    lingo::indent(p);
+    lingo::print_newline(p);
+    if(node->update == nullptr) {
+        lingo::print(p, "[NULL]");
+    } else {
+        Visit(node->update.get());
+    }
+    lingo::undent(p);
+
+    lingo::print_newline(p);
+    lingo::print(p, "- body");
+    lingo::indent(p);
+    lingo::print_newline(p);
+    Visit(node->body.get());
+    lingo::undent(p);
+}

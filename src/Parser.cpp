@@ -59,6 +59,11 @@ namespace {
                 return 8;
             case tok::amp:
                 return 9;
+            case tok::equalequal:
+            case tok::exclaimequal:
+            case tok::equalequalequal:
+            case tok::exclaimequalequal:
+                return 10;
             case tok::plus:
             case tok::minus:
                 return 13;
@@ -145,6 +150,10 @@ NodePtr<Expression> Parser::ParseUnaryExpression(){
     switch(ts_.peek().kind()){
         case tok::plusplus:
         case tok::minusminus:
+        {
+            lingo::Token tok = ts_.get();
+            return std::make_unique<UpdateExpression>(ParseUnaryExpression(), tok, true);
+        }
         throw UnimplementedException("ParseUnaryExpression - ++/--");
         case tok::plus:
         case tok::minus:
@@ -165,7 +174,8 @@ NodePtr<Expression> Parser::ParsePostfixExpression(){
         case tok::plusplus:
         case tok::minusminus:
             //TODO make sure ther is no line terminator
-            throw UnimplementedException("ParsePostfixExpression: ++/--");
+            //TODO check valid LHS expression, and not bad keywords
+            return std::make_unique<UpdateExpression>(std::move(expr), ts_.get(), false);
         default:
         return expr;
     }
@@ -258,7 +268,7 @@ NodePtr<Expression> Parser::ParseUpdateExpression() {
 lingo::Token Parser::Expect(TokenKind kind){
     lingo::Token t = ts_.get();
     if(t.kind() != kind){
-        std::cerr << "Unexpected Token Error\n";
+        std::cerr << "Unexpected Token Error at " << t.location() << "\n";
         throw std::exception();
     }
     return t;
@@ -266,7 +276,7 @@ lingo::Token Parser::Expect(TokenKind kind){
 
 void Parser::Expect(const lingo::Token &token, TokenKind kind){
     if(token != kind) {
-        std::cerr << "Unexpected token\n";
+        std::cerr << "Unexpected token at "<< token.location() << "\n";
         throw std::exception();
     }
 }
@@ -355,13 +365,14 @@ NodePtr<Expression> Parser::ParsePrimaryExpression(){
 
 //TODO this is a big hack
 NodePtr<Statement> Parser::ParseStatement(){
+    
     switch(ts_.peek().kind()){
 
         case tok::l_brace: return ParseBlock();
         case tok::semi: throw UnimplementedException("ParseStatement - Semicolon"); //TODO need actually return an empty statement
         case tok::kw_export: throw std::exception();
-        case tok::kw_for: throw std::exception();
-        case tok::kw_if: throw std::exception();
+        case tok::kw_for: return ParseForStatement();
+        case tok::kw_if: return ParseIfStatement();
         case tok::kw_return:{
             ts_.get(); // Eat the token
             NodePtr<Statement> stmt =  std::make_unique<ReturnStatement>(ParseExpression());
@@ -374,7 +385,19 @@ NodePtr<Statement> Parser::ParseStatement(){
         default:
             break;
     }
+    NodePtr<Expression> expr = ParseExpression();
+    if(ts_.peek() == tok::colon){
+        throw UnimplementedException("ParseStatement() - labled statement");
+    }
+
+    Expect(tok::semi);
+    return std::make_unique<ExpressionStatement>(std::move(expr));
     throw std::exception();
+}
+
+NodePtr<ExpressionStatement> Parser::ParseExpressionStatement(){
+    
+    throw UnimplementedException("ParseExpressionStatement()");
 }
 
 NodePtr<Statement> Parser::ParseSourceElement(){
@@ -385,6 +408,54 @@ NodePtr<Statement> Parser::ParseSourceElement(){
     default:
         return ParseStatement();
     }
+}
+
+NodePtr<IfStatement> Parser::ParseIfStatement(){
+    Expect(tok::kw_if);
+    Expect(tok::l_paren);
+    NodePtr<Expression> condition = ParseExpression();
+    Expect(tok::r_paren);
+    NodePtr<Statement> consequent = ParseStatement();
+    if(ts_.peek() == tok::kw_else){
+        //Eat the else token
+        ts_.get();
+        return std::make_unique<IfStatement>(std::move(condition), std::move(consequent), ParseStatement());
+    } else {
+        return std::make_unique<IfStatement>(std::move(condition), std::move(consequent));
+    }
+}
+
+NodePtr<ForStatement> Parser::ParseForStatement(){
+    Expect(tok::kw_for);
+    Expect(tok::l_paren);
+
+    NodePtr<Expression> init;
+    //short cut for empty initializer
+    if(ts_.peek() != tok::semi){
+        //TODO should this also check for the let keyword?
+        if(ts_.peek() == tok::kw_var){
+            throw UnimplementedException("ParseForStatement() 'var' not supported in ParseForStatement");
+        } else {
+            init = ParseExpression();
+            if(ts_.peek() == tok::kw_in){
+                throw UnimplementedException("in keyword not supported in for statement");
+            }
+        }
+    }
+    Expect(tok::semi);
+
+    NodePtr<Expression> test;
+    if(ts_.peek() != tok::semi){
+        test = ParseExpression();
+    }
+    Expect(tok::semi);
+
+    NodePtr<Expression> update;
+    if(ts_.peek() != tok::r_paren){
+        update = ParseExpression();
+    }
+    Expect(tok::r_paren);
+    return std::make_unique<ForStatement>(std::move(init), std::move(test), std::move(update), ParseStatement());
 }
 
 void *Parser::Parse(){

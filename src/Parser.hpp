@@ -20,8 +20,12 @@ namespace c8 {
         ast::NodePtr<ast::BlockStatement> ParseBlock();
         ast::NodePtr<ast::Statement> ParseStatement();
         ast::NodePtr<ast::Statement> ParseSourceElement();
+        ast::NodePtr<ast::IfStatement> ParseIfStatement();
+        ast::NodePtr<ast::ForStatement> ParseForStatement();
+        
 
         ast::NodePtr<ast::Expression> ParseExpression();
+        ast::NodePtr<ast::ExpressionStatement> ParseExpressionStatement();
         ast::NodePtr<ast::Expression> ParseAssignmentExpression();
         ast::NodePtr<ast::Expression> ParseConditionalExpression();
         ast::NodePtr<ast::Expression> ParseBinaryExpression();
