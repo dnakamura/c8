@@ -94,11 +94,11 @@ add_test(NAME c8test COMMAND env C8_TEST_MATERIAL=${CMAKE_CURRENT_SOURCE_DIR}/te
 
 file(GLOB_RECURSE ALL_SOURCE_FILES src/*.cpp src/*.hpp)
 
-message(STATUS ${ALL_SOURCE_FILES})
-
 add_custom_target(
     clang-format
-    COMMAND clang-format -i ${ALL_SOURCE_FILES}
-    )
+    COMMAND clang-format -i ${ALL_SOURCE_FILES})
 
+add_custom_target(
+    clang-tidy
+    COMMAND clang-tidy ${ALL_SOURCE_FILES})
 
