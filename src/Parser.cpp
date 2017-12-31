@@ -78,7 +78,7 @@ int BinaryPrecedence(int kind) {
       return 0;
   }
 }
-}
+}  // namespace
 
 NodePtr<Expression> Parser::ParseBinaryExpression() {
   // TODO this whole thing needs to be redone

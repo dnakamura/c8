@@ -36,6 +36,6 @@ class Lexer {
   void push_token(TokenKind kind);
   void init_operators();
 };
-}
+}  // namespace c8
 
 #endif

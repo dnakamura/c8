@@ -1,5 +1,5 @@
-#include "Debug.hpp"
 #include "Casting.hpp"
+#include "Debug.hpp"
 
 using namespace c8::ast;
 

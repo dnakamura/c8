@@ -312,7 +312,7 @@ struct ForStatement : public Statement {
         update(std::move(update_)),
         body(std::move(body_)) {}
 };
-};
-}
+}  // namespace ast
+}  // namespace c8
 
 #endif

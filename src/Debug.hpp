@@ -36,7 +36,7 @@ class DebugPrinter : public Visitor {
   lingo::Printer p;
   // virtual void Visit
 };
-}
+}  // namespace ast
 
 namespace dbg {
 
@@ -50,7 +50,7 @@ void Dump(lingo::Printer &p, const ast::BinaryExpression &node);
 void Dump(lingo::Printer &p, const ast::ReturnStatement &node);
 void Dump(lingo::Printer &p, const ast::Identifier &node);
 void Dump(lingo::Printer &p, const ast::Literal &node);
-}
-}
+}  // namespace dbg
+}  // namespace c8
 
 #endif

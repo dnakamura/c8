@@ -8,10 +8,10 @@ enum TokenKind {
 #include "TokenKinds.def"
   //#undef TOK
 };
-}
+}  // namespace tok
 
 typedef tok::TokenKind TokenKind;
 
 const char* TokenKindToString(TokenKind kind);
-}
+}  // namespace c8
 #endif
