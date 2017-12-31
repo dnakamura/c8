@@ -88,3 +88,17 @@ target_link_libraries(c8test
 set_property(TARGET c8test PROPERTY CXX_STANDARD 14)
 
 add_test(NAME c8test COMMAND env C8_TEST_MATERIAL=${CMAKE_CURRENT_SOURCE_DIR}/test $<TARGET_FILE:c8test>)
+
+
+# clang-format Formatting
+
+file(GLOB_RECURSE ALL_SOURCE_FILES src/*.cpp src/*.hpp)
+
+message(STATUS ${ALL_SOURCE_FILES})
+
+add_custom_target(
+    clang-format
+    COMMAND clang-format -i ${ALL_SOURCE_FILES}
+    )
+
+
