@@ -192,7 +192,7 @@ NodePtr<Expression> Parser::ParseLHSExpression() {
         ts_.get();
         expr = std::make_unique<MemberExpression>(std::move(expr),
                                                   ParseExpression(), true);
-        ast::NodePtr<Expression> accessor_expr = ParseExpression();
+        NodePtr<Expression> accessor_expr = ParseExpression();
         Expect(tok::l_square);
 
         // break;
@@ -201,7 +201,7 @@ NodePtr<Expression> Parser::ParseLHSExpression() {
         ts_.get();
         expr = std::make_unique<MemberExpression>(std::move(expr),
                                                   ParseExpression(), false);
-        ast::NodePtr<Expression> accessor_expr = ParseExpression();
+        NodePtr<Expression> accessor_expr = ParseExpression();
 
         throw std::exception();
       }

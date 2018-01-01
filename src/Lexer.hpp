@@ -11,8 +11,6 @@ namespace c8 {
 class Lexer {
   lingo::Character_stream &cs_;
   lingo::Token_stream &ts_;
-  // lingo::String_builder str_;
-  // lingo::Location loc_;
   lingo::Symbol_table symbols_;
 
   const char *ts, *te;

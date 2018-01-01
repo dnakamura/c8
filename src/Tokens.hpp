@@ -1,12 +1,11 @@
-#ifndef TOKEN_H
-#define TOKEN_H
+#ifndef C8_TOKENS_HPP
+#define C8_TOKENS_HPP
 
 namespace c8 {
 namespace tok {
 enum TokenKind {
 #define TOK(x) x,
 #include "TokenKinds.def"
-  //#undef TOK
 };
 }
 

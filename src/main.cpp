@@ -14,7 +14,6 @@ using namespace c8;
 
 int main(int argc, char **argv) {
   std::set_terminate(__gnu_cxx::__verbose_terminate_handler);
-  std::cout << "\n\n";
   if (argc != 2) {
     std::cerr << "usage: c8 <input-file>\n";
     return -1;
@@ -28,18 +27,11 @@ int main(int argc, char **argv) {
 
   lex();
   Parser parser(ts);
-
   std::cout << "Finished lexing\n";
 
-  // lingo::Token t = ts.get();
-  /*while(! ts.eof()) {
-      std::cout << ts.get() << "\n";
-  }*/
   ast::NodePtr<ast::FunctionDeclaration> funcptr = parser.ParseFunctionDef();
   ast::DebugPrinter dbg;
   dbg.Visit(funcptr.get());
-  // lingo::Printer printer(std::cout);
-  // dbg::Dump(printer,*funcptr);
 
   return 0;
 }

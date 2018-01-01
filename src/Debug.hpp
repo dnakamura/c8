@@ -38,19 +38,6 @@ class DebugPrinter : public Visitor {
 };
 }
 
-namespace dbg {
-
-void Dump(lingo::Printer &p, const ast::FunctionDeclaration &node);
-void Dump(lingo::Printer &p, const ast::Identifier &node);
-void Dump(lingo::Printer &p, const ast::BlockStatement &node);
-void Dump(lingo::Printer &p, const ast::Expression &node);
-void Dump(lingo::Printer &p, const ast::Statement &node);
-void Dump(lingo::Printer &p, const ast::BinaryExpression &node);
-// void Dump(lingo::Printer &p, const ast::Statement &node);
-void Dump(lingo::Printer &p, const ast::ReturnStatement &node);
-void Dump(lingo::Printer &p, const ast::Identifier &node);
-void Dump(lingo::Printer &p, const ast::Literal &node);
-}
 }
 
 #endif
