@@ -66,21 +66,19 @@ class Node {
   // virtual void Accept(Visitor *v) = 0;
   enum NodeKind {
     Kind_STATEMENT_START,
-
     Kind_BlockStatement,
     Kind_ReturnStatement,
     Kind_ExpressionStatement,
     Kind_IfStatement,
     Kind_ForStatement,
 
-    // DeclaratoionStart?
     Kind_DEVLARATION_START,
     Kind_FunctionDeclaration,
     Kind_VariableDeclaration,
     Kind_DECLARATION_END,
     Kind_STATEMENT_END = Kind_DECLARATION_END,
 
-    Kind_EXPRESSION_START,
+    Kind_EXPRESSION_START = Kind_STATEMENT_END,
     Kind_Identifier,
     Kind_Literal,
     Kind_UpdateExpression,
@@ -213,7 +211,7 @@ struct VariableDeclarator : public Node {
 };
 
 struct VariableDeclaration : public Declaration {
-  // TODO kind
+
   VariableDeclaration() : Declaration(Kind_VariableDeclaration) {}
 };
 
@@ -278,9 +276,6 @@ struct Function {
 };
 
 struct FunctionDeclaration : public Statement, public Function {
-  // NodePtr<Identifier> id;
-  // NodeVector<Expression> params;
-  // NodePtr<BlockStatement> body;
   static bool classof(const Node *node) {
     return node->Kind() == Kind_FunctionDeclaration;
   }
