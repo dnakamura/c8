@@ -31,6 +31,12 @@ void DebugPrinter::Visit(Expression *node) {
     case Node::Kind_UnaryExpression:
       Visit(static_cast<UnaryExpression *>(node));
       break;
+    case Node::Kind_MemberExpression:
+      Visit(static_cast<MemberExpression *>(node));
+      break;
+    case Node::Kind_CallExpression:
+      Visit(static_cast<CallExpression*>(node));
+      break;
     default:
       throw std::exception();
   }
@@ -223,4 +229,59 @@ void DebugPrinter::Visit(ForStatement *node) {
   lingo::print_newline(p);
   Visit(node->body.get());
   lingo::undent(p);
+}
+
+void DebugPrinter::Visit(MemberExpression *node){
+  lingo::print(p,"Member Expression");
+  lingo::print_newline(p);
+
+  lingo::print(p, "- Object");
+  lingo::indent(p);
+  Visit(node->object.get());
+  lingo::undent(p);
+  lingo::print_newline(p);
+
+  lingo::print(p, "- Property");
+  lingo::indent(p);
+  lingo::print_newline(p);
+  Visit(node->property.get());
+  lingo::undent(p);
+  lingo::print_newline(p);
+
+  lingo::print(p, "- Computed =");
+  if(node->computed){
+    lingo::print(p, "TRUE");
+  } else {
+    lingo::print(p, "FALSE");
+  }
+}
+
+  NodePtr<Expression> callee;
+  NodeVector<Expression> arguments;
+void DebugPrinter::Visit(CallExpression *node){
+  lingo::print(p,"Call");
+  lingo::print_newline(p);
+
+  lingo::print(p, "-callee");
+  lingo::indent(p);
+  lingo::print_newline(p);
+  Visit(node->callee.get());
+  lingo::undent(p);
+  lingo::print_newline(p);
+
+  lingo::print(p, "- arguments");
+  lingo::indent(p);
+  lingo::print_newline(p);
+
+  int i = 0;
+  for(int i =0 ; i < node->arguments.size(); ++i){
+    if(i != 0 ){
+      lingo::print_newline(p);
+    }
+    lingo::print_enclosed(p, '[', ']', i);
+    lingo::print(p, " ");
+    Visit(node->arguments[i].get());
+  }
+  lingo::undent(p);
+
 }

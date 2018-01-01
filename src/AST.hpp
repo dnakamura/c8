@@ -35,6 +35,8 @@ struct IfStatement;
 struct ForStatement;
 struct Declaration;
 struct VariableDeclaration;
+struct MemberExpression;
+struct CallExpression;
 
 class Visitor {
  public:
@@ -53,6 +55,8 @@ class Visitor {
   virtual void Visit(UpdateExpression *node) = 0;
   virtual void Visit(Literal *node) = 0;
   virtual void Visit(Identifier *node) = 0;
+  virtual void Visit(MemberExpression *node) = 0;
+  virtual void Visit(CallExpression *node) = 0;
   // virtual void Visit
 };
 
@@ -83,6 +87,7 @@ class Node {
     Kind_UnaryExpression,
     Kind_BinaryExpression,
     Kind_MemberExpression,
+    Kind_CallExpression,
     Kind_EXPRESSION_END,
 
     Kind_VariableDeclarator
@@ -170,6 +175,16 @@ struct MemberExpression : public Expression {
         object(std::move(object_)),
         property(std::move(property_)),
         computed(computed_) {}
+};
+
+struct CallExpression : public Expression {
+  NodePtr<Expression> callee;
+  NodeVector<Expression> arguments;
+
+  CallExpression(NodePtr<Expression> &&callee_, NodeVector<Expression> &&args_)
+      : Expression(Kind_CallExpression),
+        callee(std::move(callee_)),
+        arguments(std::move(args_)) {}
 };
 
 struct Statement : public Node {

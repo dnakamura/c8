@@ -177,8 +177,9 @@ NodePtr<Expression> Parser::ParsePostfixExpression() {
 
 // ast::NodePtr<ast::Expression> ParseComputedMemberExpression();
 NodePtr<Expression> Parser::ParseLHSExpression() {
-  NodePtr<Expression> expr =
-      (ts_.peek() == tok::kw_new) ? nullptr : ParsePrimaryExpression();
+  NodePtr<Expression> expr = (ts_.peek() == tok::kw_new)
+                                 ? throw std::exception()
+                                 : ParsePrimaryExpression();
   if (ts_.peek() == tok::kw_new) {
     // TODO we need to handle kw_new properly
     throw new UnimplementedException("ParseLHSExpression 'new'");
@@ -186,8 +187,8 @@ NodePtr<Expression> Parser::ParseLHSExpression() {
   while (true) {
     switch (ts_.peek().kind()) {
       case tok::l_paren:
-        // TODO parse a call expression
-        throw std::exception();
+        return std::make_unique<CallExpression>(std::move(expr),
+                                                ParseArguments());
       case tok::l_square: {
         ts_.get();
         expr = std::make_unique<MemberExpression>(std::move(expr),
@@ -201,9 +202,6 @@ NodePtr<Expression> Parser::ParseLHSExpression() {
         ts_.get();
         expr = std::make_unique<MemberExpression>(std::move(expr),
                                                   ParseExpression(), false);
-        NodePtr<Expression> accessor_expr = ParseExpression();
-
-        throw std::exception();
       }
       default:
         return expr;
@@ -287,14 +285,7 @@ NodePtr<FunctionDeclaration> Parser::ParseFunctionDef() {
 NodeVector<Identifier> Parser::ParseParameters() {
   Expect(tok::l_paren);
   NodeVector<Identifier> params;
-  // lingo::Token token;
 
-  /*while((token = ts_.get()) == tok::identifier){
-      params.push_back(std::make_unique<Identifier>(token.symbol()));
-  }
-
-  if(tok != tok::r_paren)*/
-  // token = ts_.get();
   // we may have no arguments, so just return
   if (ts_.peek() == tok::r_paren) {
     ts_.get();
@@ -392,7 +383,6 @@ NodePtr<Statement> Parser::ParseStatement() {
 
   Expect(tok::semi);
   return std::make_unique<ExpressionStatement>(std::move(expr));
-  throw std::exception();
 }
 
 NodePtr<ExpressionStatement> Parser::ParseExpressionStatement() {
@@ -460,6 +450,23 @@ NodePtr<ForStatement> Parser::ParseForStatement() {
   Expect(tok::r_paren);
   return std::make_unique<ForStatement>(std::move(init), std::move(test),
                                         std::move(update), ParseStatement());
+}
+
+NodeVector<Expression> Parser::ParseArguments() {
+  // throw std::exception();
+  Expect(tok::l_paren);
+  NodeVector<Expression> args;
+  if (ts_.peek() != tok::r_paren) {
+    while (true) {
+      args.push_back(ParseAssignmentExpression());
+      if (ts_.peek() == tok::r_paren) {
+        break;
+      }
+      Expect(tok::comma);
+    }
+  }
+  Expect(tok::r_paren);
+  return args;
 }
 
 void *Parser::Parse() { return NULL; }

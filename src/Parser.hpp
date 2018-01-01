@@ -16,6 +16,7 @@ class Parser {
   lingo::Token Expect(TokenKind kind);
 
   ast::NodeVector<ast::Identifier> ParseParameters();
+  ast::NodeVector<ast::Expression> ParseArguments();
   ast::NodePtr<ast::BlockStatement> ParseBlock();
   ast::NodePtr<ast::Statement> ParseStatement();
   ast::NodePtr<ast::Statement> ParseSourceElement();

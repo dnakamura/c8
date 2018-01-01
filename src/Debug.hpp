@@ -21,6 +21,8 @@ class DebugPrinter : public Visitor {
   void Visit(BinaryExpression *node) override;
   void Visit(UnaryExpression *node) override;
   void Visit(UpdateExpression *node) override;
+  void Visit(MemberExpression *node) override;
+  void Visit(CallExpression *node) override;
 
   DebugPrinter() : p(std::cout) {}
 
