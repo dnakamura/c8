@@ -1,6 +1,7 @@
 #include "Debug.hpp"
 #include "Lexer.hpp"
 #include "Parser.hpp"
+#include "Token.hpp"
 
 #include <lingo/character.hpp>
 #include <lingo/error.hpp>
@@ -21,7 +22,7 @@ int main(int argc, char **argv) {
 
   lingo::File input(argv[1]);
   lingo::Character_stream cs(input);
-  lingo::Token_stream ts;
+  TokenStream ts;
 
   c8::Lexer lex(cs, ts);
 

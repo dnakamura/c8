@@ -29,7 +29,7 @@ TEST(c8test, test) {
 
     lingo::File input(test_file);
     lingo::Character_stream cs(input);
-    lingo::Token_stream ts;
+    TokenStream ts;
 
     c8::Lexer lex(cs,ts);
 

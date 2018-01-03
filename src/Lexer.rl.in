@@ -4,7 +4,7 @@
 */
 
 #include "Lexer.hpp"
-#include "Tokens.hpp"
+#include "Token.hpp"
 
 #include <stdio.h>
 #include <string.h>

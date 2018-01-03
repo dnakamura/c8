@@ -1,5 +1,5 @@
-#include "Casting.hpp"
 #include "Debug.hpp"
+#include "Casting.hpp"
 
 using namespace c8::ast;
 
@@ -35,7 +35,7 @@ void DebugPrinter::Visit(Expression *node) {
       Visit(static_cast<MemberExpression *>(node));
       break;
     case Node::Kind_CallExpression:
-      Visit(static_cast<CallExpression*>(node));
+      Visit(static_cast<CallExpression *>(node));
       break;
     default:
       throw std::exception();
@@ -67,7 +67,7 @@ void DebugPrinter::Visit(Statement *node) {
 
 void DebugPrinter::Visit(Identifier *node) {
   lingo::print(p, "[Identifier] - ");
-  lingo::print_quoted(p, node->symbol->spelling());
+  lingo::print_quoted(p, node->symbol);
 }
 
 void DebugPrinter::Visit(BlockStatement *node) {
@@ -119,7 +119,16 @@ void DebugPrinter::Visit(FunctionDeclaration *node) {
 
 void DebugPrinter::Visit(Literal *node) {
   lingo::print(p, "[literal]  ");
-  lingo::print_quoted(p, node->symbol->spelling());
+  switch (node->symbol.kind()) {
+    case tok::string_literal:
+      lingo::print_quoted(p, node->symbol.string_value());
+      break;
+    case tok::numeric_literal:
+      lingo::print_quoted(p, node->symbol.numeric_value());
+      break;
+    default:
+      throw std::exception();
+  }
 }
 
 void DebugPrinter::Visit(ReturnStatement *node) {
@@ -132,7 +141,7 @@ void DebugPrinter::Visit(ReturnStatement *node) {
 
 void DebugPrinter::Visit(BinaryExpression *node) {
   lingo::print(p, "[Binary] - ");
-  lingo::print_quoted(p, node->oper.symbol()->spelling());
+  lingo::print_quoted(p, node->oper.ToString());
   lingo::indent(p);
   lingo::print_newline(p);
 
@@ -148,7 +157,7 @@ void DebugPrinter::Visit(UpdateExpression *node) {
   } else {
     lingo::print(p, "[Postfix Update] - ");
   }
-  lingo::print_quoted(p, node->oper.symbol()->spelling());
+  lingo::print_quoted(p, node->oper.ToString());
   lingo::indent(p);
   lingo::print_newline(p);
   Visit(node->argument.get());
@@ -157,7 +166,7 @@ void DebugPrinter::Visit(UpdateExpression *node) {
 
 void DebugPrinter::Visit(UnaryExpression *node) {
   lingo::print(p, "[Unary] - ");
-  lingo::print_quoted(p, node->oper.symbol()->spelling());
+  lingo::print_quoted(p, node->oper.ToString());
   lingo::indent(p);
   lingo::print_newline(p);
   Visit(node->argument.get());
@@ -231,8 +240,8 @@ void DebugPrinter::Visit(ForStatement *node) {
   lingo::undent(p);
 }
 
-void DebugPrinter::Visit(MemberExpression *node){
-  lingo::print(p,"Member Expression");
+void DebugPrinter::Visit(MemberExpression *node) {
+  lingo::print(p, "Member Expression");
   lingo::print_newline(p);
 
   lingo::print(p, "- Object");
@@ -249,17 +258,17 @@ void DebugPrinter::Visit(MemberExpression *node){
   lingo::print_newline(p);
 
   lingo::print(p, "- Computed =");
-  if(node->computed){
+  if (node->computed) {
     lingo::print(p, "TRUE");
   } else {
     lingo::print(p, "FALSE");
   }
 }
 
-  NodePtr<Expression> callee;
-  NodeVector<Expression> arguments;
-void DebugPrinter::Visit(CallExpression *node){
-  lingo::print(p,"Call");
+NodePtr<Expression> callee;
+NodeVector<Expression> arguments;
+void DebugPrinter::Visit(CallExpression *node) {
+  lingo::print(p, "Call");
   lingo::print_newline(p);
 
   lingo::print(p, "-callee");
@@ -274,8 +283,8 @@ void DebugPrinter::Visit(CallExpression *node){
   lingo::print_newline(p);
 
   int i = 0;
-  for(int i =0 ; i < node->arguments.size(); ++i){
-    if(i != 0 ){
+  for (int i = 0; i < node->arguments.size(); ++i) {
+    if (i != 0) {
       lingo::print_newline(p);
     }
     lingo::print_enclosed(p, '[', ']', i);
@@ -283,5 +292,4 @@ void DebugPrinter::Visit(CallExpression *node){
     Visit(node->arguments[i].get());
   }
   lingo::undent(p);
-
 }

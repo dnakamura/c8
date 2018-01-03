@@ -1,8 +1,7 @@
 #ifndef C8_AST_HPP
 #define C8_AST_HPP
 
-#include <lingo/symbol.hpp>
-#include <lingo/token.hpp>
+#include "Token.hpp"
 
 #include <memory>
 #include <vector>
@@ -112,7 +111,7 @@ struct Expression : public Node {
 
 struct UpdateExpression : public Expression {
   NodePtr<Expression> argument;
-  lingo::Token oper;
+  Token oper;
   bool prefix;
 
   static bool classof(const Node *node) {
@@ -121,7 +120,7 @@ struct UpdateExpression : public Expression {
 
   // TODO deprecated
   UpdateExpression() : Expression(Kind_UpdateExpression){};
-  UpdateExpression(NodePtr<Expression> &&arg, const lingo::Token &op, bool pfx)
+  UpdateExpression(NodePtr<Expression> &&arg, const Token &op, bool pfx)
       : Expression(Kind_UpdateExpression),
         argument(std::move(arg)),
         oper(op),
@@ -130,12 +129,12 @@ struct UpdateExpression : public Expression {
 
 struct UnaryExpression : public Expression {
   NodePtr<Expression> argument;
-  lingo::Token oper;
+  Token oper;
 
   static bool classof(const Node *node) {
     return node->Kind() == Kind_UnaryExpression;
   }
-  UnaryExpression(lingo::Token oper_, NodePtr<Expression> &&arg)
+  UnaryExpression(Token oper_, NodePtr<Expression> &&arg)
       : Expression(Kind_UnaryExpression),
         argument(std::move(arg)),
         oper(oper_) {}
@@ -144,14 +143,14 @@ struct UnaryExpression : public Expression {
 struct BinaryExpression : public Expression {
   NodePtr<Expression> left;
   NodePtr<Expression> right;
-  lingo::Token oper;
+  Token oper;
 
   static bool classof(const Node *node) {
     return node->Kind() == Kind_BinaryExpression;
   }
 
   BinaryExpression(NodePtr<Expression> &&left_, NodePtr<Expression> &&right_,
-                   lingo::Token oper_)
+                   Token oper_)
       : Expression(Kind_BinaryExpression),
         left(std::move(left_)),
         right(std::move(right_)),
@@ -211,7 +210,6 @@ struct VariableDeclarator : public Node {
 };
 
 struct VariableDeclaration : public Declaration {
-
   VariableDeclaration() : Declaration(Kind_VariableDeclaration) {}
 };
 
@@ -249,23 +247,24 @@ struct ExpressionStatement : public Statement {
 };
 
 struct Identifier : public Expression {
-  lingo::Symbol const *symbol;
+  // TODO this feels stupid
+  const std::string symbol;
 
   static bool classof(const Node *node) {
     return node->Kind() == Kind_Identifier;
   }
-  Identifier(const lingo::Symbol *symbol_)
+  Identifier(const std::string &symbol_)
       : Expression(Kind_Identifier), symbol(symbol_) {}
   // protected:
   // using Expression::Expression;
 };
 
 struct Literal : public Expression {
-  lingo::Symbol const *symbol;
+  // TODO this feels wrong
+  Token symbol;
 
   static bool classof(const Node *node) { return node->Kind() == Kind_Literal; }
-  Literal(const lingo::Symbol *symbol_)
-      : Expression(Kind_Literal), symbol(symbol_) {}
+  Literal(const Token &symbol_) : Expression(Kind_Literal), symbol(symbol_) {}
 };
 
 // Does not inherit from Node to avoid the diamond problem

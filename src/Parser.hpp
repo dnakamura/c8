@@ -1,19 +1,17 @@
 #ifndef C8_PARSER_HPP
 #define C8_PARSER_HPP
 
-#include <lingo/token.hpp>
-#include "Tokens.hpp"
-
 #include "AST.hpp"
+#include "Token.hpp"
 
 namespace c8 {
 
 class Parser {
-  lingo::Token_stream &ts_;
+  TokenStream &ts_;
 
  public:
-  void Expect(const lingo::Token &token, TokenKind kind);
-  lingo::Token Expect(TokenKind kind);
+  void Expect(const Token &token, TokenKind kind);
+  Token Expect(TokenKind kind);
 
   ast::NodeVector<ast::Identifier> ParseParameters();
   ast::NodeVector<ast::Expression> ParseArguments();
@@ -40,7 +38,7 @@ class Parser {
  public:
   ast::NodePtr<ast::FunctionDeclaration> ParseFunctionDef();
 
-  Parser(lingo::Token_stream &ts) : ts_(ts) {}
+  Parser(TokenStream &ts) : ts_(ts) {}
 
   void *Parse();
 };
