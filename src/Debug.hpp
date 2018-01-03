@@ -1,10 +1,9 @@
 #ifndef C8_DEBUG_HPP
 #define C8_DEBUG_HPP
 
-#include "AST.hpp"
-#include "lingo/print.hpp"
-
 #include <iostream>
+#include "AST.hpp"
+#include "IndentingStream.hpp"
 
 namespace c8 {
 namespace ast {
@@ -24,7 +23,7 @@ class DebugPrinter : public Visitor {
   void Visit(MemberExpression *node) override;
   void Visit(CallExpression *node) override;
 
-  DebugPrinter() : p(std::cout) {}
+  DebugPrinter() : out_(std::cout) {}
 
  protected:
   // Note these are helper dispatch methods
@@ -35,7 +34,7 @@ class DebugPrinter : public Visitor {
   void Visit(ExpressionStatement *node) { Visit(node->expression.get()); }
 
  private:
-  lingo::Printer p;
+  util::IndentingStream out_;
   // virtual void Visit
 };
 }  // namespace ast

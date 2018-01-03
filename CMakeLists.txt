@@ -20,7 +20,6 @@ c8_find_program(SED_PATH sed)
 
 # TODO the generation logic for the lexer requires unix at the moment
 add_subdirectory(backward-cpp)
-add_subdirectory(lingo)
 add_subdirectory(googletest)
 
 
@@ -53,10 +52,6 @@ add_library(c8
 )
 
 target_include_directories(c8 PUBLIC src)
-
-target_link_libraries(c8
-    PUBLIC lingo
-)
 
 set_property(TARGET c8 PROPERTY CXX_STANDARD 14)
 

@@ -1,7 +1,11 @@
 #include "Debug.hpp"
 #include "Casting.hpp"
+#include "IndentingStream.hpp"
 
 using namespace c8::ast;
+using nl = c8::util::IndentingStream::NewlineMarker;
+using indent = c8::util::IndentingStream::IndentMarker;
+using undent = c8::util::IndentingStream::UndentMarker;
 
 void DebugPrinter::Visit(Node *node) {
   if (isa<Statement>(node)) {
@@ -66,230 +70,172 @@ void DebugPrinter::Visit(Statement *node) {
 }
 
 void DebugPrinter::Visit(Identifier *node) {
-  lingo::print(p, "[Identifier] - ");
-  lingo::print_quoted(p, node->symbol);
+  out_ << "[Identifier] - \"" << node->symbol << "\"";
 }
 
 void DebugPrinter::Visit(BlockStatement *node) {
-  lingo::print(p, "{");
-  lingo::indent(p);
+  out_ << "{";
+  out_.indent();
 
   for (auto &child : node->body) {
-    lingo::print_newline(p);
+    out_ << nl();
     Visit(child.get());
   }
-  lingo::undent(p);
-  lingo::print_newline(p);
-  lingo::print("}}");
+  out_.undent();
+  out_ << nl() << "}";
 }
 
 void DebugPrinter::Visit(FunctionDeclaration *node) {
-  lingo::print(p, "[FunctionDeclaration]");
-  indent(p);
-  lingo::print_newline(p);
+  out_ << "[FunctionDeclaration]" << indent() << nl();
 
-  lingo::print(p, "id:");
-  lingo::indent(p);
-  lingo::print_newline(p);
+  out_ << "id:" << indent() << nl();
   Visit(node->id.get());
-  lingo::undent(p);
-  lingo::print_newline(p);
-  lingo::print_newline(p);
+  out_ << undent() << nl();
 
-  lingo::print(p, "Params:");
-  lingo::indent(p);
-  lingo::print_newline(p);
+  out_ << "Params:" << indent() << nl();
+
   for (const ast::NodePtr<ast::Identifier> &param : node->params) {
     Visit(param.get());
-    lingo::print_newline(p);
+    out_ << nl();
   }
-  lingo::undent(p);
-
-  lingo::print_newline(p);
-  lingo::print(p, "Body:");
-  lingo::indent(p);
-  lingo::print_newline(p);
+  out_ << undent() << nl();
+  out_ << "Body:" << indent() << nl();
   Visit(node->body.get());
 
-  lingo::undent(p);
-  lingo::undent(p);
-  lingo::print_newline(p);
-  lingo::print_newline(p);
+  out_ << undent() << undent() << nl();
 }
 
 void DebugPrinter::Visit(Literal *node) {
-  lingo::print(p, "[literal]  ");
+  out_ << "[literal]  \"";
   switch (node->symbol.kind()) {
     case tok::string_literal:
-      lingo::print_quoted(p, node->symbol.string_value());
+      out_ << node->symbol.string_value();
       break;
     case tok::numeric_literal:
-      lingo::print_quoted(p, node->symbol.numeric_value());
+      out_ << node->symbol.numeric_value();
       break;
     default:
       throw std::exception();
   }
+  out_ << "\"";
 }
 
 void DebugPrinter::Visit(ReturnStatement *node) {
-  lingo::print(p, "return");
-  lingo::indent(p);
-  lingo::print_newline(p);
+  out_ << "return" << indent() << nl();
   Visit(node->argument.get());
-  lingo::undent(p);
+  out_.undent();
 }
 
 void DebugPrinter::Visit(BinaryExpression *node) {
-  lingo::print(p, "[Binary] - ");
-  lingo::print_quoted(p, node->oper.ToString());
-  lingo::indent(p);
-  lingo::print_newline(p);
+  out_ << "[Binary] - \"" << node->oper.ToString() << "\"" << indent() << nl();
 
   Visit(node->left.get());
-  lingo::print_newline(p);
+  out_ << nl();
   Visit(node->right.get());
-  lingo::undent(p);
+  out_.undent();
 }
 
 void DebugPrinter::Visit(UpdateExpression *node) {
   if (node->prefix) {
-    lingo::print(p, "[Prefix Update] - ");
+    out_ << "[Prefix Update] - \"";
   } else {
-    lingo::print(p, "[Postfix Update] - ");
+    out_ << "[Postfix Update] - \"";
   }
-  lingo::print_quoted(p, node->oper.ToString());
-  lingo::indent(p);
-  lingo::print_newline(p);
+  out_ << node->oper.ToString() << "\"" << indent() << nl();
   Visit(node->argument.get());
-  lingo::undent(p);
+  out_.undent();
 }
 
 void DebugPrinter::Visit(UnaryExpression *node) {
-  lingo::print(p, "[Unary] - ");
-  lingo::print_quoted(p, node->oper.ToString());
-  lingo::indent(p);
-  lingo::print_newline(p);
+  out_ << "[Unary] - \"" << node->oper.ToString() << "\"" << indent() << nl();
   Visit(node->argument.get());
-  lingo::undent(p);
+  out_.undent();
 }
 
 void DebugPrinter::Visit(IfStatement *node) {
-  lingo::print(p, "if");
-  lingo::indent(p);
-  lingo::print_newline(p);
+  out_ << "if" << indent() << nl();
   Visit(node->test.get());
-  lingo::undent(p);
-  lingo::print_newline(p);
-  lingo::print(p, "then");
-  lingo::indent(p);
-  lingo::print_newline(p);
+  out_ << undent() << nl();
+  out_ << "then" << indent() << nl();
   Visit(node->consequent.get());
-  lingo::undent(p);
+  out_.undent();
 
   if (node->alternate != nullptr) {
-    lingo::print_newline(p);
-    lingo::print("else");
-    lingo::indent(p);
-    lingo::print_newline(p);
+    out_ << nl() << "else" << indent() << nl();
     Visit(node->alternate.get());
-    lingo::undent(p);
+    out_.undent();
   }
 }
 
 // init test update body
 void DebugPrinter::Visit(ForStatement *node) {
-  lingo::print(p, "for");
-  lingo::print_newline(p);
-  lingo::print(p, "- init");
-  lingo::indent(p);
-  lingo::print_newline(p);
+  out_ << "for" << nl();
+  out_ << "- init" << indent() << nl();
+
   if (node->init == nullptr) {
-    lingo::print(p, "[NULL]");
+    out_ << "[NULL]";
   } else {
     Visit(node->init.get());
   }
-  lingo::undent(p);
+  out_ << undent() << nl();
 
-  lingo::print_newline(p);
-  lingo::print(p, "- test");
-  lingo::indent(p);
-  lingo::print_newline(p);
+  out_ << "- test" << indent() << nl();
+
   if (node->test == nullptr) {
-    lingo::print(p, "[NULL]");
+    out_ << "[NULL]";
   } else {
     Visit(node->test.get());
   }
-  lingo::undent(p);
+  out_ << undent() << nl();
 
-  lingo::print_newline(p);
-  lingo::print(p, "- update");
-  lingo::indent(p);
-  lingo::print_newline(p);
+  out_ << "- update" << indent() << nl();
+
   if (node->update == nullptr) {
-    lingo::print(p, "[NULL]");
+    out_ << "[NULL]";
   } else {
     Visit(node->update.get());
   }
-  lingo::undent(p);
+  out_ << undent() << nl();
 
-  lingo::print_newline(p);
-  lingo::print(p, "- body");
-  lingo::indent(p);
-  lingo::print_newline(p);
+  out_ << "- body" << indent() << nl();
   Visit(node->body.get());
-  lingo::undent(p);
+  out_.undent();
 }
 
 void DebugPrinter::Visit(MemberExpression *node) {
-  lingo::print(p, "Member Expression");
-  lingo::print_newline(p);
+  out_ << "Member Expression" << nl();
 
-  lingo::print(p, "- Object");
-  lingo::indent(p);
+  out_ << "- Object" << indent() << nl();
   Visit(node->object.get());
-  lingo::undent(p);
-  lingo::print_newline(p);
+  out_ << undent() << nl();
 
-  lingo::print(p, "- Property");
-  lingo::indent(p);
-  lingo::print_newline(p);
+  out_ << "- Property" << indent() << nl();
   Visit(node->property.get());
-  lingo::undent(p);
-  lingo::print_newline(p);
+  out_ << undent() << nl();
 
-  lingo::print(p, "- Computed =");
   if (node->computed) {
-    lingo::print(p, "TRUE");
+    out_ << "- Computed = TRUE";
   } else {
-    lingo::print(p, "FALSE");
+    out_ << "- Computed = FALSE";
   }
 }
 
-NodePtr<Expression> callee;
-NodeVector<Expression> arguments;
 void DebugPrinter::Visit(CallExpression *node) {
-  lingo::print(p, "Call");
-  lingo::print_newline(p);
+  out_ << "Call" << nl();
 
-  lingo::print(p, "-callee");
-  lingo::indent(p);
-  lingo::print_newline(p);
+  out_ << "-callee" << indent() << nl();
   Visit(node->callee.get());
-  lingo::undent(p);
-  lingo::print_newline(p);
+  out_ << undent() << nl();
 
-  lingo::print(p, "- arguments");
-  lingo::indent(p);
-  lingo::print_newline(p);
+  out_ << "- arguments" << indent() << nl();
 
   int i = 0;
   for (int i = 0; i < node->arguments.size(); ++i) {
     if (i != 0) {
-      lingo::print_newline(p);
+      out_ << nl();
     }
-    lingo::print_enclosed(p, '[', ']', i);
-    lingo::print(p, " ");
+    out_ << "[" << i << "] ";
     Visit(node->arguments[i].get());
   }
-  lingo::undent(p);
+  out_.undent();
 }
