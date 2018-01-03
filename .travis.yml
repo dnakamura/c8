@@ -11,14 +11,9 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - g++-5
-      - llvm
       - ragel
       - m4
       - sed
-      - libgmp-dev
-      - libboost-dev
-      - libboost-system-dev
-      - libboost-filesystem-dev
 
 env:
   global:
