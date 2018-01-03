@@ -44,6 +44,6 @@ class Parser {
 
   void *Parse();
 };
-}
+}  // namespace c8
 
 #endif

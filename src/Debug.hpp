@@ -38,8 +38,8 @@ class DebugPrinter : public Visitor {
   lingo::Printer p;
   // virtual void Visit
 };
-}
+}  // namespace ast
 
-}
+}  // namespace c8
 
 #endif
