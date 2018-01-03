@@ -3,11 +3,6 @@
 #include "Parser.hpp"
 #include "Token.hpp"
 
-#include <lingo/character.hpp>
-#include <lingo/error.hpp>
-#include <lingo/file.hpp>
-#include <lingo/io.hpp>
-
 #include <exception>
 #include <iostream>
 
@@ -20,11 +15,8 @@ int main(int argc, char **argv) {
     return -1;
   }
 
-  lingo::File input(argv[1]);
-  lingo::Character_stream cs(input);
   TokenStream ts;
-
-  c8::Lexer lex(cs, ts);
+  c8::Lexer lex(argv[1], ts);
 
   lex();
   Parser parser(ts);

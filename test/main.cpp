@@ -8,10 +8,6 @@
 #include "Lexer.hpp"
 #include "Parser.hpp"
 
-#include <lingo/file.hpp>
-#include <lingo/io.hpp>
-#include <lingo/error.hpp>
-#include <lingo/character.hpp>
 
 namespace c8 {
 
@@ -27,11 +23,10 @@ TEST(c8test, test) {
 
     // std::cout << (test_material += "/test.js");
 
-    lingo::File input(test_file);
-    lingo::Character_stream cs(input);
+
     TokenStream ts;
 
-    c8::Lexer lex(cs,ts);
+    c8::Lexer lex(test_file.c_str(),ts);
 
     lex();
     Parser parser(ts);

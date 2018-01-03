@@ -1,10 +1,8 @@
 #include "Lexer.hpp"
 
 #include <iostream>
-#include <lingo/string.hpp>
 #include <string>
 
-using namespace lingo;
 using namespace c8;
 
 void Lexer::push_token(TokenKind kind) {
@@ -25,7 +23,7 @@ void Lexer::push_token(TokenKind kind) {
       // TODO floating point is broken
       {
         std::string string_value(ts, te);
-        int n = string_to_int<int>(string_value, 10);
+        int n = std::stoi(string_value, nullptr, 10);
         ts_.Put(Token(dummy_loc, static_cast<double>(n)));
         break;
       }

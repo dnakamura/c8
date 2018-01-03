@@ -103,8 +103,8 @@ void Lexer::lex()
 	int cs, act, have = 0;
 	int done = 0;
 	te = 0;
-	const char *p = cs_.begin();
-	const char *pe = cs_.end();
+	const char *p = buffer_.c_str();
+	const char *pe = buffer_.c_str() + buffer_.size();
 	const char *eof = pe;
 	//ts = 0;
 	linestart = p;
