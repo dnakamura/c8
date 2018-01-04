@@ -14,8 +14,6 @@
 #include <iostream>
 #include <iomanip>
 
-
-
 using namespace c8;
 
 
@@ -39,11 +37,6 @@ using namespace c8;
 	# Alpha charactres or underscore.
 	alpha_u = alpha | '_';
 
-	# Symbols. Upon entering clear the buffer. On all transitions
-	# buffer a character. Upon leaving dump the symbol.
-	( punct - [_'"] ) {
-		printf( "symbol(%i): %c\n", curline, ts[0] );
-	};
 
 	# Identifier. Upon entering clear the buffer. On all transitions
 	# buffer a character. Upon leaving, dump the identifier.
@@ -108,7 +101,6 @@ void Lexer::lex()
 	const char *eof = pe;
 	//ts = 0;
 	linestart = p;
-	std::cout << "lex()\n";
 
 	curline = 1;
 	%% write init;
