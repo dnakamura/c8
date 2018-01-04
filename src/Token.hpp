@@ -84,7 +84,8 @@ class TokenStream {
   Token Get();
   Token Peek();
   Token Peek(int);
-
+  bool is_eof();
+  void Reset() { position_ = list_.begin(); }
  private:
   TokenList list_;
   Iterator position_;
@@ -100,7 +101,7 @@ inline void TokenStream::Put(Token t) {
     position_ = list_.begin();
   }
 }
-
+inline bool TokenStream::is_eof() { return position_ == list_.end();}
 inline Token TokenStream::Get() { return *position_++; }
 
 inline Token TokenStream::Peek() { return *position_; }
