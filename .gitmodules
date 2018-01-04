@@ -1,6 +1,6 @@
 [submodule "googletest"]
-	path = googletest
+	path = third-party/googletest
 	url = https://github.com/google/googletest.git
 [submodule "backward-cpp"]
-	path = backward-cpp
+	path = third-party/backward-cpp
 	url = https://github.com/bombela/backward-cpp.git
