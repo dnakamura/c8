@@ -3,10 +3,10 @@
 
 #include <gtest/gtest.h>
 
-#include "AST.hpp"
-#include "Debug.hpp"
-#include "Lexer.hpp"
-#include "Parser.hpp"
+#include <c8/AST.hpp>
+#include <c8/Debug.hpp>
+#include <c8/Lexer.hpp>
+#include <c8/Parser.hpp>
 
 
 namespace c8 {

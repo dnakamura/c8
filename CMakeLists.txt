@@ -31,7 +31,7 @@ add_subdirectory(googletest)
 
 add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/ragel_fragment.rl"
     COMMAND "CMAKE_CURRENT_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/translate.sh"
-    DEPENDS translate.sh transform.m4 src/TokenKinds.def
+    DEPENDS translate.sh transform.m4 include/c8/TokenKinds.def
     WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
 )
 
@@ -56,7 +56,7 @@ add_library(c8
     Lexer_generated.cpp
 )
 
-target_include_directories(c8 PUBLIC src)
+target_include_directories(c8 PUBLIC include)
 
 set_property(TARGET c8 PROPERTY CXX_STANDARD 14)
 

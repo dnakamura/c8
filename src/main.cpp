@@ -1,7 +1,7 @@
-#include "Debug.hpp"
-#include "Lexer.hpp"
-#include "Parser.hpp"
-#include "Token.hpp"
+#include <c8/Debug.hpp>
+#include "c8/Lexer.hpp"
+#include "c8/Parser.hpp"
+#include "c8/Token.hpp"
 
 #include <exception>
 #include <iostream>

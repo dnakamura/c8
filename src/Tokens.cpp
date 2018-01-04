@@ -1,4 +1,4 @@
-#include "Token.hpp"
+#include "c8/Token.hpp"
 
 using namespace c8;
 
@@ -7,7 +7,7 @@ const char* c8::TokenKindToString(TokenKind kind) {
 #define TOK(x) \
   case tok::x: \
     return #x;
-#include "TokenKinds.def"
+#include "c8/TokenKinds.def"
 #undef TOK
     default:
       return "???";
@@ -25,7 +25,7 @@ const char* c8::TokenSpelling(TokenKind kind) {
 #define KEYWORD(x)  \
   case tok::kw_##x: \
     return #x;
-#include "TokenKinds.def"
+#include "c8/TokenKinds.def"
 #undef TOK
     default:
       return "???";

@@ -1,4 +1,4 @@
-#include "Lexer.hpp"
+#include "c8/Lexer.hpp"
 
 #include <iostream>
 #include <string>

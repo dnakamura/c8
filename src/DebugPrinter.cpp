@@ -1,6 +1,6 @@
-#include "Debug.hpp"
-#include "Casting.hpp"
-#include "IndentingStream.hpp"
+#include "c8/Debug.hpp"
+#include "c8/Casting.hpp"
+#include "c8/IndentingStream.hpp"
 
 using namespace c8::ast;
 using nl = c8::util::IndentingStream::NewlineMarker;

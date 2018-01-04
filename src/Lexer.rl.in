@@ -3,8 +3,8 @@
 	changequote(`[[',`]]')
 */
 
-#include "Lexer.hpp"
-#include "Token.hpp"
+#include "c8/Lexer.hpp"
+#include "c8/Token.hpp"
 
 #include <stdio.h>
 #include <string.h>
