@@ -18,6 +18,11 @@ c8_find_program(M4_PATH m4)
 c8_find_program(SED_PATH sed)
 
 
+# If user didnt specify a build type, default to debug
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "")
+endif()
+
 # TODO the generation logic for the lexer requires unix at the moment
 add_subdirectory(backward-cpp)
 add_subdirectory(googletest)
