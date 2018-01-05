@@ -24,10 +24,8 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 # TODO the generation logic for the lexer requires unix at the moment
-add_subdirectory(backward-cpp)
-add_subdirectory(googletest)
-
-
+add_subdirectory(third-party/backward-cpp)
+add_subdirectory(third-party/googletest)
 
 add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/ragel_fragment.rl"
     COMMAND "CMAKE_CURRENT_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/translate.sh"
@@ -56,7 +54,14 @@ add_library(c8
     Lexer_generated.cpp
 )
 
-target_include_directories(c8 PUBLIC include)
+target_compile_definitions(c8 PRIVATE RAPIDJSON_HAS_STDSTRING)
+
+target_include_directories(c8
+    PUBLIC
+        include
+    PRIVATE
+        third-party/rapidjson/include
+)
 
 set_property(TARGET c8 PROPERTY CXX_STANDARD 14)
 
