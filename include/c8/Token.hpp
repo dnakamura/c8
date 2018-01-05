@@ -16,6 +16,7 @@ typedef tok::TokenKind TokenKind;
 
 const char *TokenKindToString(TokenKind kind);
 const char *TokenSpelling(TokenKind kind);
+TokenKind TokenKindFromString(const std::string & str);
 
 // TODO we should actually implement SourceLocation
 struct SourceLocation {};
@@ -35,6 +36,8 @@ class Token {
 
   std::string ToString() const;
 
+  bool operator==(const Token& other) const;
+  bool operator!=(const Token& other) const { return !(*this == other);}
  private:
   SourceLocation loc_;
   TokenKind kind_;
@@ -72,6 +75,22 @@ inline std::string Token::ToString() const {
   }
 }
 
+inline bool Token::operator==(const Token& other) const {
+  if(kind_ != other.kind_)
+    return false;
+  //TODO compare source locations
+  switch(kind_){
+    case tok::identifier:
+    case tok::string_literal:
+      return  string_value_ == other.string_value_;
+    case tok::numeric_literal:
+      return numeric_value_ == other.numeric_value_;
+    default:
+      //Other tokens only have kind, which matches
+      return true;
+  }
+}
+
 // TODO redisign this api. Its currently set up to be source compatable with
 // lingo to ease the transition
 class TokenStream {
@@ -86,6 +105,11 @@ class TokenStream {
   Token Peek(int);
   bool is_eof();
   void Reset() { position_ = list_.begin(); }
+
+  std::string Serialize() const;
+  bool operator==(const TokenStream& other) const;
+  bool operator!=(const TokenStream& other) const {return !(*this == other);}
+
  private:
   TokenList list_;
   Iterator position_;
@@ -117,5 +141,20 @@ inline Token TokenStream::Peek(int lookahead) {
   return *it;
 }
 
+inline bool TokenStream::operator==(const TokenStream& other) const {
+  auto it1 = list_.begin();
+  auto it2 = other.list_.begin();
+  while(it1 != list_.end()){
+    if(it2 == other.list_.end())
+      return false;
+    if( *it1 != *it2)
+      return false;
+    ++it1;
+    ++it2;
+  }
+  return it2 == other.list_.end();
+}
+
+void DeserializeTokenStream(std::string json, TokenStream &stream);
 }  // namespace c8
 #endif
