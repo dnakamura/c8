@@ -83,6 +83,7 @@ set_property(TARGET c8_exe PROPERTY CXX_STANDARD 14)
 
 # C8 Testing
 
+add_subdirectory(test/lexer)
 add_executable(c8test
     test/main.cpp)
 

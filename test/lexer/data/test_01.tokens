@@ -1,0 +1,308 @@
+[
+    {
+        "type": "kw_function"
+    },
+    {
+        "type": "identifier",
+        "value": "foo"
+    },
+    {
+        "type": "l_paren"
+    },
+    {
+        "type": "identifier",
+        "value": "a"
+    },
+    {
+        "type": "comma"
+    },
+    {
+        "type": "identifier",
+        "value": "b"
+    },
+    {
+        "type": "r_paren"
+    },
+    {
+        "type": "l_brace"
+    },
+    {
+        "type": "identifier",
+        "value": "x"
+    },
+    {
+        "type": "equal"
+    },
+    {
+        "type": "numeric_literal",
+        "value": 4.0
+    },
+    {
+        "type": "semi"
+    },
+    {
+        "type": "plusplus"
+    },
+    {
+        "type": "identifier",
+        "value": "a"
+    },
+    {
+        "type": "semi"
+    },
+    {
+        "type": "identifier",
+        "value": "a"
+    },
+    {
+        "type": "plusplus"
+    },
+    {
+        "type": "semi"
+    },
+    {
+        "type": "identifier",
+        "value": "foo"
+    },
+    {
+        "type": "period"
+    },
+    {
+        "type": "identifier",
+        "value": "bar"
+    },
+    {
+        "type": "l_paren"
+    },
+    {
+        "type": "numeric_literal",
+        "value": 1.0
+    },
+    {
+        "type": "comma"
+    },
+    {
+        "type": "numeric_literal",
+        "value": 2.0
+    },
+    {
+        "type": "comma"
+    },
+    {
+        "type": "numeric_literal",
+        "value": 3.0
+    },
+    {
+        "type": "r_paren"
+    },
+    {
+        "type": "semi"
+    },
+    {
+        "type": "kw_if"
+    },
+    {
+        "type": "l_paren"
+    },
+    {
+        "type": "identifier",
+        "value": "x"
+    },
+    {
+        "type": "equalequal"
+    },
+    {
+        "type": "numeric_literal",
+        "value": 3.0
+    },
+    {
+        "type": "r_paren"
+    },
+    {
+        "type": "l_brace"
+    },
+    {
+        "type": "kw_return"
+    },
+    {
+        "type": "numeric_literal",
+        "value": 2.0
+    },
+    {
+        "type": "plus"
+    },
+    {
+        "type": "numeric_literal",
+        "value": 3.0
+    },
+    {
+        "type": "semi"
+    },
+    {
+        "type": "r_brace"
+    },
+    {
+        "type": "kw_for"
+    },
+    {
+        "type": "l_paren"
+    },
+    {
+        "type": "identifier",
+        "value": "i"
+    },
+    {
+        "type": "equal"
+    },
+    {
+        "type": "numeric_literal",
+        "value": 0.0
+    },
+    {
+        "type": "semi"
+    },
+    {
+        "type": "identifier",
+        "value": "i"
+    },
+    {
+        "type": "exclaimequal"
+    },
+    {
+        "type": "numeric_literal",
+        "value": 2.0
+    },
+    {
+        "type": "semi"
+    },
+    {
+        "type": "plusplus"
+    },
+    {
+        "type": "identifier",
+        "value": "i"
+    },
+    {
+        "type": "r_paren"
+    },
+    {
+        "type": "l_brace"
+    },
+    {
+        "type": "identifier",
+        "value": "a"
+    },
+    {
+        "type": "plus"
+    },
+    {
+        "type": "numeric_literal",
+        "value": 3.0
+    },
+    {
+        "type": "semi"
+    },
+    {
+        "type": "r_brace"
+    },
+    {
+        "type": "identifier",
+        "value": "bar"
+    },
+    {
+        "type": "l_paren"
+    },
+    {
+        "type": "identifier",
+        "value": "a"
+    },
+    {
+        "type": "comma"
+    },
+    {
+        "type": "numeric_literal",
+        "value": 2.0
+    },
+    {
+        "type": "comma"
+    },
+    {
+        "type": "numeric_literal",
+        "value": 3.0
+    },
+    {
+        "type": "r_paren"
+    },
+    {
+        "type": "semi"
+    },
+    {
+        "type": "kw_return"
+    },
+    {
+        "type": "numeric_literal",
+        "value": 4.0
+    },
+    {
+        "type": "plus"
+    },
+    {
+        "type": "numeric_literal",
+        "value": 1.0
+    },
+    {
+        "type": "star"
+    },
+    {
+        "type": "numeric_literal",
+        "value": 3.0
+    },
+    {
+        "type": "semi"
+    },
+    {
+        "type": "r_brace"
+    },
+    {
+        "type": "identifier",
+        "value": "foo"
+    },
+    {
+        "type": "period"
+    },
+    {
+        "type": "identifier",
+        "value": "bar"
+    },
+    {
+        "type": "period"
+    },
+    {
+        "type": "identifier",
+        "value": "baz"
+    },
+    {
+        "type": "l_paren"
+    },
+    {
+        "type": "numeric_literal",
+        "value": 1.0
+    },
+    {
+        "type": "comma"
+    },
+    {
+        "type": "numeric_literal",
+        "value": 2.0
+    },
+    {
+        "type": "comma"
+    },
+    {
+        "type": "numeric_literal",
+        "value": 3.0
+    },
+    {
+        "type": "r_paren"
+    }
+]
