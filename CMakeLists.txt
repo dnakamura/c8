@@ -1,9 +1,7 @@
-
 cmake_minimum_required(VERSION 3.2)
+project(c8 VERSION 0.1 LANGUAGES C CXX)
 
 enable_testing()
-
-project(c8 VERSION 0.1 LANGUAGES C CXX)
 
 function(c8_find_program var name)
     find_program("${var}" "${name}")
@@ -69,8 +67,10 @@ set_property(TARGET c8 PROPERTY CXX_STANDARD 14)
 # C8 Executable
 
 add_executable(c8_exe
-    src/main.cpp ${BACKWARD_ENABLE})
-    add_backward(c8_exe)
+    src/main.cpp
+    ${BACKWARD_ENABLE}
+)
+add_backward(c8_exe)
 
 set_target_properties(c8_exe PROPERTIES OUTPUT_NAME "c8")
 
