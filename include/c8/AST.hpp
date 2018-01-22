@@ -56,7 +56,11 @@ class Visitor {
   virtual void Visit(Identifier *node) = 0;
   virtual void Visit(MemberExpression *node) = 0;
   virtual void Visit(CallExpression *node) = 0;
-  // virtual void Visit
+
+  //Dispatch helper methods
+  void VisitNode(Node*);
+  void VisitExpression(Expression*);
+  void VisitStatement(Statement*);
 };
 
 class Node {

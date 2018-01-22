@@ -14,6 +14,7 @@ class DebugPrinter : public Visitor {
   void Visit(ReturnStatement *node) override;
   void Visit(IfStatement *node) override;
   void Visit(ForStatement *node) override;
+  void Visit(ExpressionStatement *node) override { VisitExpression(node->expression.get()); }
 
   void Visit(Literal *node) override;
   void Visit(Identifier *node) override;
@@ -24,14 +25,6 @@ class DebugPrinter : public Visitor {
   void Visit(CallExpression *node) override;
 
   DebugPrinter() : out_(std::cout) {}
-
- protected:
-  // Note these are helper dispatch methods
-  // TODO should maybe be refactored into Visitor?
-  void Visit(Node *node);
-  void Visit(Expression *node);
-  void Visit(Statement *node);
-  void Visit(ExpressionStatement *node) { Visit(node->expression.get()); }
 
  private:
   util::IndentingStream out_;

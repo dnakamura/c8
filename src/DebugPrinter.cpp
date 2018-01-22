@@ -7,67 +7,7 @@ using nl = c8::util::IndentingStream::NewlineMarker;
 using indent = c8::util::IndentingStream::IndentMarker;
 using undent = c8::util::IndentingStream::UndentMarker;
 
-void DebugPrinter::Visit(Node *node) {
-  if (isa<Statement>(node)) {
-    Visit(static_cast<Statement *>(node));
-  } else if (isa<Expression>(node)) {
-    Visit(static_cast<Expression *>(node));
-  } else {
-    throw std::exception();
-  }
-}
 
-void DebugPrinter::Visit(Expression *node) {
-  // TODO make this use out llvm-style rtti
-  switch (node->Kind()) {
-    case Node::Kind_BinaryExpression:
-      Visit(static_cast<BinaryExpression *>(node));
-      break;
-    case Node::Kind_Identifier:
-      Visit(static_cast<Identifier *>(node));
-      break;
-    case Node::Kind_Literal:
-      Visit(static_cast<Literal *>(node));
-      break;
-    case Node::Kind_UpdateExpression:
-      Visit(static_cast<UpdateExpression *>(node));
-      break;
-    case Node::Kind_UnaryExpression:
-      Visit(static_cast<UnaryExpression *>(node));
-      break;
-    case Node::Kind_MemberExpression:
-      Visit(static_cast<MemberExpression *>(node));
-      break;
-    case Node::Kind_CallExpression:
-      Visit(static_cast<CallExpression *>(node));
-      break;
-    default:
-      throw std::exception();
-  }
-}
-
-void DebugPrinter::Visit(Statement *node) {
-  switch (node->Kind()) {
-    case Node::Kind_BlockStatement:
-      Visit(static_cast<BlockStatement *>(node));
-      break;
-    case Node::Kind_ReturnStatement:
-      Visit(static_cast<ReturnStatement *>(node));
-      break;
-    case Node::Kind_ExpressionStatement:
-      Visit(static_cast<ExpressionStatement *>(node));
-      break;
-    case Node::Kind_IfStatement:
-      Visit(static_cast<IfStatement *>(node));
-      break;
-    case Node::Kind_ForStatement:
-      Visit(static_cast<ForStatement *>(node));
-      break;
-    default:
-      throw std::exception();
-  }
-  // TODO make this use out llvm-style rtti
-}
 
 void DebugPrinter::Visit(Identifier *node) {
   out_ << "[Identifier] - \"" << node->name << "\"";
@@ -79,7 +19,7 @@ void DebugPrinter::Visit(BlockStatement *node) {
 
   for (auto &child : node->body) {
     out_ << nl();
-    Visit(child.get());
+    VisitStatement(child.get());
   }
   out_.undent();
   out_ << nl() << "}";
@@ -122,16 +62,16 @@ void DebugPrinter::Visit(Literal *node) {
 
 void DebugPrinter::Visit(ReturnStatement *node) {
   out_ << "return" << indent() << nl();
-  Visit(node->argument.get());
+  VisitExpression(node->argument.get());
   out_.undent();
 }
 
 void DebugPrinter::Visit(BinaryExpression *node) {
   out_ << "[Binary] - \"" << node->oper.ToString() << "\"" << indent() << nl();
 
-  Visit(node->left.get());
+  VisitExpression(node->left.get());
   out_ << nl();
-  Visit(node->right.get());
+  VisitExpression(node->right.get());
   out_.undent();
 }
 
@@ -142,27 +82,27 @@ void DebugPrinter::Visit(UpdateExpression *node) {
     out_ << "[Postfix Update] - \"";
   }
   out_ << node->oper.ToString() << "\"" << indent() << nl();
-  Visit(node->argument.get());
+  VisitExpression(node->argument.get());
   out_.undent();
 }
 
 void DebugPrinter::Visit(UnaryExpression *node) {
   out_ << "[Unary] - \"" << node->oper.ToString() << "\"" << indent() << nl();
-  Visit(node->argument.get());
+  VisitExpression(node->argument.get());
   out_.undent();
 }
 
 void DebugPrinter::Visit(IfStatement *node) {
   out_ << "if" << indent() << nl();
-  Visit(node->test.get());
+  VisitExpression(node->test.get());
   out_ << undent() << nl();
   out_ << "then" << indent() << nl();
-  Visit(node->consequent.get());
+  VisitStatement(node->consequent.get());
   out_.undent();
 
   if (node->alternate != nullptr) {
     out_ << nl() << "else" << indent() << nl();
-    Visit(node->alternate.get());
+    VisitStatement(node->alternate.get());
     out_.undent();
   }
 }
@@ -175,7 +115,7 @@ void DebugPrinter::Visit(ForStatement *node) {
   if (node->init == nullptr) {
     out_ << "[NULL]";
   } else {
-    Visit(node->init.get());
+    VisitNode(node->init.get());
   }
   out_ << undent() << nl();
 
@@ -184,7 +124,7 @@ void DebugPrinter::Visit(ForStatement *node) {
   if (node->test == nullptr) {
     out_ << "[NULL]";
   } else {
-    Visit(node->test.get());
+    VisitExpression(node->test.get());
   }
   out_ << undent() << nl();
 
@@ -193,12 +133,12 @@ void DebugPrinter::Visit(ForStatement *node) {
   if (node->update == nullptr) {
     out_ << "[NULL]";
   } else {
-    Visit(node->update.get());
+    VisitExpression(node->update.get());
   }
   out_ << undent() << nl();
 
   out_ << "- body" << indent() << nl();
-  Visit(node->body.get());
+  VisitStatement(node->body.get());
   out_.undent();
 }
 
@@ -206,11 +146,11 @@ void DebugPrinter::Visit(MemberExpression *node) {
   out_ << "Member Expression" << nl();
 
   out_ << "- Object" << indent() << nl();
-  Visit(node->object.get());
+  VisitExpression(node->object.get());
   out_ << undent() << nl();
 
   out_ << "- Property" << indent() << nl();
-  Visit(node->property.get());
+  VisitExpression(node->property.get());
   out_ << undent() << nl();
 
   if (node->computed) {
@@ -224,7 +164,7 @@ void DebugPrinter::Visit(CallExpression *node) {
   out_ << "Call" << nl();
 
   out_ << "-callee" << indent() << nl();
-  Visit(node->callee.get());
+  VisitExpression(node->callee.get());
   out_ << undent() << nl();
 
   out_ << "- arguments" << indent() << nl();
@@ -235,7 +175,7 @@ void DebugPrinter::Visit(CallExpression *node) {
       out_ << nl();
     }
     out_ << "[" << i << "] ";
-    Visit(node->arguments[i].get());
+    VisitExpression(node->arguments[i].get());
   }
   out_.undent();
 }

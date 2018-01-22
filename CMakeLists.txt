@@ -49,6 +49,7 @@ add_library(c8
     src/Parser.cpp
     src/Tokens.cpp
     src/DebugPrinter.cpp
+    src/Visitor.cpp
     Lexer_generated.cpp
 )
 
