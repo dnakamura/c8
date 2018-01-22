@@ -118,7 +118,7 @@ struct UpdateExpression : public Expression {
     return node->Kind() == Kind_UpdateExpression;
   }
 
-  // TODO deprecated
+  [[deprecated]]
   UpdateExpression() : Expression(Kind_UpdateExpression){};
   UpdateExpression(NodePtr<Expression> &&arg, const Token &op, bool pfx)
       : Expression(Kind_UpdateExpression),
@@ -218,12 +218,12 @@ struct BlockStatement : public Statement {
 
  public:
   BlockStatement() : Statement(Kind_BlockStatement) {}
+  //TODO write new style constructor
 
   static bool classof(const Node *node) {
     return node->Kind() == Kind_BlockStatement;
   }
 
-  // void Accept(Visitor *visitor) override;
  protected:
   using Statement::Statement;
 };
@@ -279,6 +279,7 @@ struct FunctionDeclaration : public Statement, public Function {
     return node->Kind() == Kind_FunctionDeclaration;
   }
   FunctionDeclaration() : Statement(Kind_FunctionDeclaration) {}
+  //TODO neeeds new style constructor
 };
 
 struct IfStatement : public Statement {
