@@ -211,6 +211,7 @@ struct VariableDeclarator : public Node {
 };
 
 struct VariableDeclaration : public Declaration {
+  NodeVector<VariableDeclarator> declarations;
   VariableDeclaration() : Declaration(Kind_VariableDeclaration) {}
 };
 
