@@ -33,7 +33,7 @@ TEST(c8test, test) {
 
     ast::NodePtr<ast::FunctionDeclaration> funcptr = parser.ParseFunctionDef();
     ast::DebugPrinter dbg;
-    dbg.Visit(funcptr.get());
+    dbg.VisitNode(funcptr.get());
 }
 } // namespace c8
 

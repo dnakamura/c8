@@ -39,23 +39,22 @@ struct CallExpression;
 
 class Visitor {
  public:
-  virtual void Visit(FunctionDeclaration *node) = 0;
-  virtual void Visit(BlockStatement *node) = 0;
-  // virtual void Visit(Expression *node)
+  virtual void VisitFunctionDeclaration(FunctionDeclaration *node) = 0;
+  virtual void VisitBlockStatement(BlockStatement *node) = 0;
 
-  virtual void Visit(ReturnStatement *node) = 0;
-  virtual void Visit(ExpressionStatement *node) = 0;
-  virtual void Visit(IfStatement *node) = 0;
-  virtual void Visit(ForStatement *node) = 0;
+  virtual void VisitReturnStatement(ReturnStatement *node) = 0;
+  virtual void VisitExpressionStatement(ExpressionStatement *node) = 0;
+  virtual void VisitIfStatement(IfStatement *node) = 0;
+  virtual void VisitForStatement(ForStatement *node) = 0;
 
   // Expression visitors
-  virtual void Visit(BinaryExpression *node) = 0;
-  virtual void Visit(UnaryExpression *node) = 0;
-  virtual void Visit(UpdateExpression *node) = 0;
-  virtual void Visit(Literal *node) = 0;
-  virtual void Visit(Identifier *node) = 0;
-  virtual void Visit(MemberExpression *node) = 0;
-  virtual void Visit(CallExpression *node) = 0;
+  virtual void VisitBinaryExpression(BinaryExpression *node) = 0;
+  virtual void VisitUnaryExpression(UnaryExpression *node) = 0;
+  virtual void VisitUpdateExpression(UpdateExpression *node) = 0;
+  virtual void VisitLiteral(Literal *node) = 0;
+  virtual void VisitIdentifier(Identifier *node) = 0;
+  virtual void VisitMemberExpression(MemberExpression *node) = 0;
+  virtual void VisitCallExpression(CallExpression *node) = 0;
 
   //Dispatch helper methods
   void VisitNode(Node*);

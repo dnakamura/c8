@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
 
   ast::NodePtr<ast::FunctionDeclaration> funcptr = parser.ParseFunctionDef();
   ast::DebugPrinter dbg;
-  dbg.Visit(funcptr.get());
+  dbg.VisitNode(funcptr.get());
 
   return 0;
 }

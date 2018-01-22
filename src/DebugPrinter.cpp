@@ -9,11 +9,11 @@ using undent = c8::util::IndentingStream::UndentMarker;
 
 
 
-void DebugPrinter::Visit(Identifier *node) {
+void DebugPrinter::VisitIdentifier(Identifier *node) {
   out_ << "[Identifier] - \"" << node->name << "\"";
 }
 
-void DebugPrinter::Visit(BlockStatement *node) {
+void DebugPrinter::VisitBlockStatement(BlockStatement *node) {
   out_ << "{";
   out_.indent();
 
@@ -25,27 +25,27 @@ void DebugPrinter::Visit(BlockStatement *node) {
   out_ << nl() << "}";
 }
 
-void DebugPrinter::Visit(FunctionDeclaration *node) {
+void DebugPrinter::VisitFunctionDeclaration(FunctionDeclaration *node) {
   out_ << "[FunctionDeclaration]" << indent() << nl();
 
   out_ << "id:" << indent() << nl();
-  Visit(node->id.get());
+  VisitIdentifier(node->id.get());
   out_ << undent() << nl();
 
   out_ << "Params:" << indent() << nl();
 
   for (const ast::NodePtr<ast::Identifier> &param : node->params) {
-    Visit(param.get());
+    VisitIdentifier(param.get());
     out_ << nl();
   }
   out_ << undent() << nl();
   out_ << "Body:" << indent() << nl();
-  Visit(node->body.get());
+  VisitBlockStatement(node->body.get());
 
   out_ << undent() << undent() << nl();
 }
 
-void DebugPrinter::Visit(Literal *node) {
+void DebugPrinter::VisitLiteral(Literal *node) {
   out_ << "[literal]  \"";
   switch (node->value.kind()) {
     case tok::string_literal:
@@ -60,13 +60,13 @@ void DebugPrinter::Visit(Literal *node) {
   out_ << "\"";
 }
 
-void DebugPrinter::Visit(ReturnStatement *node) {
+void DebugPrinter::VisitReturnStatement(ReturnStatement *node) {
   out_ << "return" << indent() << nl();
   VisitExpression(node->argument.get());
   out_.undent();
 }
 
-void DebugPrinter::Visit(BinaryExpression *node) {
+void DebugPrinter::VisitBinaryExpression(BinaryExpression *node) {
   out_ << "[Binary] - \"" << node->oper.ToString() << "\"" << indent() << nl();
 
   VisitExpression(node->left.get());
@@ -75,7 +75,7 @@ void DebugPrinter::Visit(BinaryExpression *node) {
   out_.undent();
 }
 
-void DebugPrinter::Visit(UpdateExpression *node) {
+void DebugPrinter::VisitUpdateExpression(UpdateExpression *node) {
   if (node->prefix) {
     out_ << "[Prefix Update] - \"";
   } else {
@@ -86,13 +86,13 @@ void DebugPrinter::Visit(UpdateExpression *node) {
   out_.undent();
 }
 
-void DebugPrinter::Visit(UnaryExpression *node) {
+void DebugPrinter::VisitUnaryExpression(UnaryExpression *node) {
   out_ << "[Unary] - \"" << node->oper.ToString() << "\"" << indent() << nl();
   VisitExpression(node->argument.get());
   out_.undent();
 }
 
-void DebugPrinter::Visit(IfStatement *node) {
+void DebugPrinter::VisitIfStatement(IfStatement *node) {
   out_ << "if" << indent() << nl();
   VisitExpression(node->test.get());
   out_ << undent() << nl();
@@ -108,7 +108,7 @@ void DebugPrinter::Visit(IfStatement *node) {
 }
 
 // init test update body
-void DebugPrinter::Visit(ForStatement *node) {
+void DebugPrinter::VisitForStatement(ForStatement *node) {
   out_ << "for" << nl();
   out_ << "- init" << indent() << nl();
 
@@ -142,7 +142,7 @@ void DebugPrinter::Visit(ForStatement *node) {
   out_.undent();
 }
 
-void DebugPrinter::Visit(MemberExpression *node) {
+void DebugPrinter::VisitMemberExpression(MemberExpression *node) {
   out_ << "Member Expression" << nl();
 
   out_ << "- Object" << indent() << nl();
@@ -160,7 +160,7 @@ void DebugPrinter::Visit(MemberExpression *node) {
   }
 }
 
-void DebugPrinter::Visit(CallExpression *node) {
+void DebugPrinter::VisitCallExpression(CallExpression *node) {
   out_ << "Call" << nl();
 
   out_ << "-callee" << indent() << nl();
