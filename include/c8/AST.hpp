@@ -134,6 +134,7 @@ struct UnaryExpression : public Expression {
   static bool classof(const Node *node) {
     return node->Kind() == Kind_UnaryExpression;
   }
+
   UnaryExpression(Token oper_, NodePtr<Expression> &&arg)
       : Expression(Kind_UnaryExpression),
         argument(std::move(arg)),
@@ -248,23 +249,23 @@ struct ExpressionStatement : public Statement {
 
 struct Identifier : public Expression {
   // TODO this feels stupid
-  const std::string symbol;
+  const std::string name;
 
   static bool classof(const Node *node) {
     return node->Kind() == Kind_Identifier;
   }
   Identifier(const std::string &symbol_)
-      : Expression(Kind_Identifier), symbol(symbol_) {}
+      : Expression(Kind_Identifier), name(symbol_) {}
   // protected:
   // using Expression::Expression;
 };
 
 struct Literal : public Expression {
   // TODO this feels wrong
-  Token symbol;
+  Token value;
 
   static bool classof(const Node *node) { return node->Kind() == Kind_Literal; }
-  Literal(const Token &symbol_) : Expression(Kind_Literal), symbol(symbol_) {}
+  Literal(const Token &symbol_) : Expression(Kind_Literal), value(symbol_) {}
 };
 
 // Does not inherit from Node to avoid the diamond problem

@@ -70,7 +70,7 @@ void DebugPrinter::Visit(Statement *node) {
 }
 
 void DebugPrinter::Visit(Identifier *node) {
-  out_ << "[Identifier] - \"" << node->symbol << "\"";
+  out_ << "[Identifier] - \"" << node->name << "\"";
 }
 
 void DebugPrinter::Visit(BlockStatement *node) {
@@ -107,12 +107,12 @@ void DebugPrinter::Visit(FunctionDeclaration *node) {
 
 void DebugPrinter::Visit(Literal *node) {
   out_ << "[literal]  \"";
-  switch (node->symbol.kind()) {
+  switch (node->value.kind()) {
     case tok::string_literal:
-      out_ << node->symbol.string_value();
+      out_ << node->value.string_value();
       break;
     case tok::numeric_literal:
-      out_ << node->symbol.numeric_value();
+      out_ << node->value.numeric_value();
       break;
     default:
       throw std::exception();
