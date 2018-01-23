@@ -59,6 +59,9 @@ void Visitor::VisitStatement(Statement *node) {
     case Node::Kind_ForStatement:
       VisitForStatement(static_cast<ForStatement *>(node));
       break;
+    case Node::Kind_FunctionDeclaration:
+      VisitFunctionDeclaration(static_cast<FunctionDeclaration*>(node));
+      break;
     default:
       throw std::exception();
   }
