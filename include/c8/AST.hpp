@@ -74,7 +74,7 @@ class Node {
     Kind_IfStatement,
     Kind_ForStatement,
 
-    Kind_DEVLARATION_START,
+    Kind_DECLARATION_START,
     Kind_FunctionDeclaration,
     Kind_VariableDeclaration,
     Kind_DECLARATION_END,
