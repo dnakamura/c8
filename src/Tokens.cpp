@@ -44,12 +44,36 @@ c8::TokenKind c8::TokenKindFromString(const std::string& str){
 }
 
 namespace {
+
+template<typename Writer>
+void SerializePosition(const c8::Position &position, Writer &writer){
+  writer.StartObject();
+  writer.String("line");
+  writer.Int(position.line);
+  writer.String("column");
+  writer.Int(position.column);
+  writer.EndObject();
+}
+
+template<typename Writer>
+void SerializeSourceLocation(const c8::SourceLocation &loc, Writer &writer){
+  writer.StartObject();
+  writer.String("start");
+  SerializePosition(loc.start, writer);
+  writer.String("end");
+  SerializePosition(loc.end, writer);
+  writer.EndObject();
+}
+
+
 template<typename Writer>
 void SerializeToken(const c8::Token &token, Writer &writer){
   writer.StartObject();
 
   writer.String("type");
   writer.String(c8::TokenKindToString(token.kind()));
+  writer.String("loc");
+  SerializeSourceLocation(token.location(), writer);
   switch(token.kind()){
     case c8::tok::identifier:
     case c8::tok::string_literal:
@@ -65,6 +89,31 @@ void SerializeToken(const c8::Token &token, Writer &writer){
 }
 
 template<typename Encoding, typename Allocator>
+c8::Position DeserializePosition(rapidjson::GenericValue<Encoding, Allocator> &object){
+  c8::Position pos;
+  assert(object.IsObject());
+  auto& line = object["line"];
+  assert(line.IsInt());
+  auto& column = object["column"];
+  assert(column.IsInt());
+
+  pos.line = line.GetInt();
+  pos.column = column.GetInt();
+  return pos;
+}
+
+template<typename Encoding, typename Allocator>
+c8::SourceLocation DeserializeSourceLocation(rapidjson::GenericValue<Encoding, Allocator> &object){
+  c8::SourceLocation loc;
+  assert(object.IsObject());
+  loc.start = DeserializePosition(object["start"]);
+  loc.end = DeserializePosition(object["end"]);
+  return loc;
+}
+
+
+
+template<typename Encoding, typename Allocator>
 c8::Token DeserializeToken(rapidjson::GenericValue<Encoding, Allocator> &object){
   using namespace c8;
   assert(object.IsObject());
@@ -72,7 +121,7 @@ c8::Token DeserializeToken(rapidjson::GenericValue<Encoding, Allocator> &object)
   assert(kindString.IsString());
   c8::TokenKind kind = TokenKindFromString(kindString.GetString());
   assert(kind != tok::invalid);
-  c8::SourceLocation location; //TODO this is dummy right now
+  c8::SourceLocation location = DeserializeSourceLocation(object["loc"]);
 
   switch(kind){
     case tok::identifier:

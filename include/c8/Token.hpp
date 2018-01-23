@@ -18,8 +18,39 @@ const char *TokenKindToString(TokenKind kind);
 const char *TokenSpelling(TokenKind kind);
 TokenKind TokenKindFromString(const std::string & str);
 
+
+struct Position {
+  int line;
+  int column;
+
+  bool operator==(const Position&) const;
+  bool operator!=(const Position&) const;
+};
+
+inline bool Position::operator==(const Position& other) const {
+  return (line == other.line) && (column == other.column);
+}
+
+inline bool Position::operator!=(const Position& other) const {
+  return !(*this == other);
+}
+
 // TODO we should actually implement SourceLocation
-struct SourceLocation {};
+struct SourceLocation {
+  //TODO: we need to track which file it came from
+  Position start;
+  Position end;
+
+  bool operator==(const SourceLocation &) const;
+  bool operator!=(const SourceLocation &) const;
+};
+inline bool SourceLocation::operator==(const SourceLocation& other) const {
+  return (start == other.start) && (end == other.end);
+}
+
+inline bool SourceLocation::operator!=(const SourceLocation& other) const {
+  return !(*this == other);
+}
 
 class Token {
  public:

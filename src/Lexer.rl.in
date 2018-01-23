@@ -100,7 +100,7 @@ void Lexer::lex()
 	const char *pe = buffer_.c_str() + buffer_.size();
 	const char *eof = pe;
 	//ts = 0;
-	linestart = p;
+	linestart = p - 1;
 
 	curline = 1;
 	%% write init;
